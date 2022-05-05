@@ -5,7 +5,7 @@ include .env
 INC = -I. -I$(VULKAN_SDK_PATH)/include -I$(GLFW_PATH)/include -I$(GLM_PATH)
 LIB = -L$(VULKAN_SDK_PATH)/Lib -L$(GLFW_PATH)/lib-mingw-w64
 
-CFLAGS = -std=c++17 -Wall -O2
+CFLAGS = -std=c++17 -Wall -Wno-unknown-pragmas -O2
 LDFLAGS = -lvulkan-1 -lglfw3dll
 
 # ACQUIRE SHADER SOURCES AND SET AS DEPENDENCY

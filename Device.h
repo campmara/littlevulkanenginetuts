@@ -50,24 +50,28 @@ namespace XIV {
         }
 
         u32 FindMemoryType(u32 typeFilter, VkMemoryPropertyFlags properties);
-        VkFormat FindSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling,
+        VkFormat FindSupportedFormat(const std::vector<VkFormat> &candidates,
+                                     VkImageTiling tiling,
                                      VkFormatFeatureFlags features);
 
         // Buffer-related helpers
-        void CreateBuffer(VkDeviceSize size, VkBufferUsageFlags usage,
-                          VkMemoryPropertyFlags properties, VkBuffer &buffer,
+        void CreateBuffer(VkDeviceSize size,
+                          VkBufferUsageFlags usage,
+                          VkMemoryPropertyFlags properties,
+                          VkBuffer &buffer,
                           VkDeviceMemory &bufferMemory);
         VkCommandBuffer BeginSingleTimeCommands();
         void EndSingleTimeCommands(VkCommandBuffer commandBuffer);
         void CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
-        void CopyBufferToImage(VkBuffer buffer, VkImage image, u32 width, u32 height,
-                               u32 layerCount);
+        void
+        CopyBufferToImage(VkBuffer buffer, VkImage image, u32 width, u32 height, u32 layerCount);
         void CreateImageWithInfo(const VkImageCreateInfo &imageInfo,
-                                 VkMemoryPropertyFlags properties, VkImage &image,
+                                 VkMemoryPropertyFlags properties,
+                                 VkImage &image,
                                  VkDeviceMemory &imageMemory);
 
         VkCommandPool CommandPool;
-        VkDevice Device;
+        VkDevice VulkanDevice;
         VkSurfaceKHR Surface;
         VkQueue GraphicsQueue;
         VkQueue PresentQueue;

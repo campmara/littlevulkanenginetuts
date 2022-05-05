@@ -11,6 +11,8 @@ DerivePointerAlignment: false
 PointerAlignment: Right
 BreakBeforeBraces: Attach
 NamespaceIndentation: All
+BinPackArguments: false
+BinPackParameters: false
 AllowShortBlocksOnASingleLine: Empty
 AllowShortFunctionsOnASingleLine: Empty
 AllowShortLambdasOnASingleLine: Empty

@@ -1,8 +1,8 @@
 #ifndef APP_H
 #define APP_H
 
-#include "Window.h"
 #include "Pipeline.h"
+#include "Window.h"
 
 namespace XIV {
     class App {
@@ -14,7 +14,12 @@ namespace XIV {
 
     private:
         Window window{WIDTH, HEIGHT, "AYO VULKAN!!!"};
-        Pipeline pipeline{"shaders/simple.vert.spv", "shaders/simple.frag.spv"};
+        Device device{window};
+        Pipeline pipeline{device,
+                          "shaders/simple.vert.spv",
+                          "shaders/simple.frag.spv",
+                          Pipeline::DefaultConfigInfo(WIDTH, HEIGHT)};
+        VkPipelineLayout pipelineLayout;
     };
 } // namespace XIV
 
