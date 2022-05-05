@@ -3,7 +3,7 @@
 #include <stdexcept>
 
 namespace XIV {
-    Window::Window(int w, int h, const char *name) : width(w), height(h), name(name) {
+    Window::Window(int w, int h, const char *name) : Width(w), Height(h), name(name) {
         InitWindow();
     }
 
@@ -23,6 +23,6 @@ namespace XIV {
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
-        window = glfwCreateWindow(width, height, name, nullptr, nullptr);
+        window = glfwCreateWindow(Width, Height, name, nullptr, nullptr);
     }
 } // namespace XIV

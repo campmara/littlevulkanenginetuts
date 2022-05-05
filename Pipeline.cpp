@@ -20,9 +20,7 @@ namespace XIV {
         vkDestroyPipeline(device.VulkanDevice, graphicsPipeline, nullptr);
     }
 
-    PipelineConfigInfo Pipeline::DefaultConfigInfo(u32 width, u32 height) {
-        PipelineConfigInfo configInfo{};
-
+    void Pipeline::DefaultConfigInfo(PipelineConfigInfo &configInfo, u32 width, u32 height) {
         configInfo.InputAssemblyInfo.sType =
             VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
         configInfo.InputAssemblyInfo.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
@@ -37,13 +35,6 @@ namespace XIV {
 
         configInfo.Scissor.offset = {0, 0};
         configInfo.Scissor.extent = {width, height};
-
-        // TODO (mara): Known issue: this creates a self-referencing structure. Fixed in tutorial 05
-        configInfo.ViewportInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
-        configInfo.ViewportInfo.viewportCount = 1;
-        configInfo.ViewportInfo.pViewports = &configInfo.Viewport;
-        configInfo.ViewportInfo.scissorCount = 1;
-        configInfo.ViewportInfo.pScissors = &configInfo.Scissor;
 
         configInfo.RasterizationInfo.sType =
             VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
@@ -98,8 +89,10 @@ namespace XIV {
         configInfo.DepthStencilInfo.stencilTestEnable = VK_FALSE;
         configInfo.DepthStencilInfo.front = {}; // Optional
         configInfo.DepthStencilInfo.back = {};  // Optional
+    }
 
-        return configInfo;
+    void Pipeline::Bind(VkCommandBuffer commandBuffer) {
+        vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
     }
 
     std::vector<char> Pipeline::ReadFile(const std::string &fileName) {
@@ -156,13 +149,20 @@ namespace XIV {
         vertexInputInfo.vertexAttributeDescriptionCount = 0;
         vertexInputInfo.pVertexAttributeDescriptions = nullptr; // Optional
 
+        VkPipelineViewportStateCreateInfo viewportInfo{};
+        viewportInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+        viewportInfo.viewportCount = 1;
+        viewportInfo.pViewports = &configInfo.Viewport;
+        viewportInfo.scissorCount = 1;
+        viewportInfo.pScissors = &configInfo.Scissor;
+
         VkGraphicsPipelineCreateInfo pipelineInfo = {};
         pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
         pipelineInfo.stageCount = 2;
         pipelineInfo.pStages = shaderStages;
         pipelineInfo.pVertexInputState = &vertexInputInfo;
         pipelineInfo.pInputAssemblyState = &configInfo.InputAssemblyInfo;
-        pipelineInfo.pViewportState = &configInfo.ViewportInfo;
+        pipelineInfo.pViewportState = &viewportInfo;
         pipelineInfo.pRasterizationState = &configInfo.RasterizationInfo;
         pipelineInfo.pMultisampleState = &configInfo.MultisampleInfo;
         pipelineInfo.pColorBlendState = &configInfo.ColorBlendInfo;

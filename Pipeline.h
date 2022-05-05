@@ -9,9 +9,12 @@
 
 namespace XIV {
     struct PipelineConfigInfo {
+        PipelineConfigInfo() = default;
+        PipelineConfigInfo(const PipelineConfigInfo &) = delete;
+        PipelineConfigInfo &operator=(const PipelineConfigInfo &) = delete;
+
         VkViewport Viewport;
         VkRect2D Scissor;
-        VkPipelineViewportStateCreateInfo ViewportInfo;
         VkPipelineInputAssemblyStateCreateInfo InputAssemblyInfo;
         VkPipelineRasterizationStateCreateInfo RasterizationInfo;
         VkPipelineMultisampleStateCreateInfo MultisampleInfo;
@@ -33,7 +36,9 @@ namespace XIV {
         Pipeline(const Pipeline &) = delete;
         void operator=(const Pipeline &) = delete;
 
-        static PipelineConfigInfo DefaultConfigInfo(u32 width, u32 height);
+        static void DefaultConfigInfo(PipelineConfigInfo &configInfo, u32 width, u32 height);
+
+        void Bind(VkCommandBuffer commandBuffer);
 
     private:
         std::vector<char> ReadFile(const std::string &fileName);

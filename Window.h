@@ -14,11 +14,15 @@ namespace XIV {
         Window(const Window &) = delete;
         Window &operator=(const Window &) = delete;
 
-        const int width;
-        const int height;
+        const int Width;
+        const int Height;
 
         bool ShouldClose() {
             return glfwWindowShouldClose(window);
+        }
+
+        VkExtent2D GetBoundsAsExtent() {
+            return {static_cast<uint32_t>(Width), static_cast<uint32_t>(Height)};
         }
 
         void CreateSurface(VkInstance instance, VkSurfaceKHR *surface);
