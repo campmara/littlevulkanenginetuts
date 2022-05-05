@@ -28,22 +28,16 @@ namespace XIV {
         void CreatePipelineLayout();
         void CreatePipeline();
         void CreateCommandBuffers();
+        void FreeCommandBuffers();
         void DrawFrame();
-
-        // just for fun
-        void Sierpinski(std::vector<Model::Vertex> &vertices,
-                        int depth,
-                        glm::vec2 left,
-                        glm::vec2 right,
-                        glm::vec2 top);
+        void RecreateSwapChain();
+        void RecordCommandBuffer(int imageIndex);
 
         Window window{WIDTH, HEIGHT, "AYO VULKAN!!!"};
         Device device{window};
-        SwapChain swapChain{device, window.GetBoundsAsExtent()};
-
+        std::unique_ptr<SwapChain> swapChain;
         std::unique_ptr<Pipeline> pipeline;
         VkPipelineLayout pipelineLayout;
-
         std::vector<VkCommandBuffer> commandBuffers;
         std::unique_ptr<Model> model;
     };

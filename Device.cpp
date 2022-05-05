@@ -22,7 +22,8 @@ namespace XIV {
                                           const VkAllocationCallbacks *pAllocator,
                                           VkDebugUtilsMessengerEXT *pDebugMessenger) {
         auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(
-            instance, "vkCreateDebugUtilsMessengerEXT");
+            instance,
+            "vkCreateDebugUtilsMessengerEXT");
         if (func != nullptr) {
             return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
         } else {
@@ -34,7 +35,8 @@ namespace XIV {
                                        VkDebugUtilsMessengerEXT debugMessenger,
                                        const VkAllocationCallbacks *pAllocator) {
         auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(
-            instance, "vkDestroyDebugUtilsMessengerEXT");
+            instance,
+            "vkDestroyDebugUtilsMessengerEXT");
         if (func != nullptr) {
             func(instance, debugMessenger, pAllocator);
         }
@@ -184,8 +186,12 @@ namespace XIV {
         region.imageOffset = {0, 0, 0};
         region.imageExtent = {width, height, 1};
 
-        vkCmdCopyBufferToImage(
-            commandBuffer, buffer, image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+        vkCmdCopyBufferToImage(commandBuffer,
+                               buffer,
+                               image,
+                               VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                               1,
+                               &region);
         EndSingleTimeCommands(commandBuffer);
     }
 
@@ -488,11 +494,13 @@ namespace XIV {
     }
 
     bool Device::CheckDeviceExtensionSupport(VkPhysicalDevice device) {
-        uint32_t extensionCount;
+        u32 extensionCount;
         vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
         std::vector<VkExtensionProperties> availableExtensions(extensionCount);
-        vkEnumerateDeviceExtensionProperties(
-            device, nullptr, &extensionCount, availableExtensions.data());
+        vkEnumerateDeviceExtensionProperties(device,
+                                             nullptr,
+                                             &extensionCount,
+                                             availableExtensions.data());
 
         std::set<std::string> requiredExtensions(DEVICE_EXTENSIONS.begin(),
                                                  DEVICE_EXTENSIONS.end());
@@ -516,8 +524,10 @@ namespace XIV {
         // Use that format count to resize details format vector and populate with data
         if (numFormats != 0) {
             details.Formats.resize(numFormats);
-            vkGetPhysicalDeviceSurfaceFormatsKHR(
-                device, Surface, &numFormats, details.Formats.data());
+            vkGetPhysicalDeviceSurfaceFormatsKHR(device,
+                                                 Surface,
+                                                 &numFormats,
+                                                 details.Formats.data());
         }
 
         // Get the number of present modes
@@ -527,8 +537,10 @@ namespace XIV {
         // Use that count to resize details present modes vector and populate with data
         if (numPresentModes != 0) {
             details.PresentModes.resize(numPresentModes);
-            vkGetPhysicalDeviceSurfacePresentModesKHR(
-                device, Surface, &numPresentModes, details.PresentModes.data());
+            vkGetPhysicalDeviceSurfacePresentModesKHR(device,
+                                                      Surface,
+                                                      &numPresentModes,
+                                                      details.PresentModes.data());
         }
 
         return details;

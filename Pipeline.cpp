@@ -21,27 +21,17 @@ namespace XIV {
         vkDestroyPipeline(device.VulkanDevice, graphicsPipeline, nullptr);
     }
 
-    void Pipeline::DefaultConfigInfo(PipelineConfigInfo &configInfo, u32 width, u32 height) {
+    void Pipeline::DefaultConfigInfo(PipelineConfigInfo &configInfo) {
         configInfo.InputAssemblyInfo.sType =
             VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
         configInfo.InputAssemblyInfo.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
         configInfo.InputAssemblyInfo.primitiveRestartEnable = VK_FALSE;
 
-        configInfo.Viewport.x = 0.0f;
-        configInfo.Viewport.y = 0.0f;
-        configInfo.Viewport.width = static_cast<float>(width);
-        configInfo.Viewport.height = static_cast<float>(height);
-        configInfo.Viewport.minDepth = 0.0f;
-        configInfo.Viewport.maxDepth = 1.0f;
-
-        configInfo.Scissor.offset = {0, 0};
-        configInfo.Scissor.extent = {width, height};
-
         configInfo.ViewportInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
         configInfo.ViewportInfo.viewportCount = 1;
-        configInfo.ViewportInfo.pViewports = &configInfo.Viewport;
+        configInfo.ViewportInfo.pViewports = nullptr;
         configInfo.ViewportInfo.scissorCount = 1;
-        configInfo.ViewportInfo.pScissors = &configInfo.Scissor;
+        configInfo.ViewportInfo.pScissors = nullptr;
 
         configInfo.RasterizationInfo.sType =
             VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
@@ -96,6 +86,13 @@ namespace XIV {
         configInfo.DepthStencilInfo.stencilTestEnable = VK_FALSE;
         configInfo.DepthStencilInfo.front = {}; // Optional
         configInfo.DepthStencilInfo.back = {};  // Optional
+
+        configInfo.DynamicStateEnables = {VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR};
+        configInfo.DynamicStateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+        configInfo.DynamicStateInfo.pDynamicStates = configInfo.DynamicStateEnables.data();
+        configInfo.DynamicStateInfo.dynamicStateCount =
+            static_cast<u32>(configInfo.DynamicStateEnables.size());
+        configInfo.DynamicStateInfo.flags = 0;
     }
 
     void Pipeline::Bind(VkCommandBuffer commandBuffer) {
@@ -153,12 +150,12 @@ namespace XIV {
         auto attributeDescriptions = Model::Vertex::GetAttributeDescriptions();
         VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
         vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-        vertexInputInfo.vertexBindingDescriptionCount =
-            static_cast<u32>(attributeDescriptions.size());
         vertexInputInfo.vertexAttributeDescriptionCount =
+            static_cast<u32>(attributeDescriptions.size());
+        vertexInputInfo.vertexBindingDescriptionCount =
             static_cast<u32>(bindingDescriptions.size());
-        vertexInputInfo.pVertexBindingDescriptions = bindingDescriptions.data();     // Optional
-        vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data(); // Optional
+        vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
+        vertexInputInfo.pVertexBindingDescriptions = bindingDescriptions.data();
 
         VkGraphicsPipelineCreateInfo pipelineInfo{};
         pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -171,14 +168,14 @@ namespace XIV {
         pipelineInfo.pMultisampleState = &configInfo.MultisampleInfo;
         pipelineInfo.pColorBlendState = &configInfo.ColorBlendInfo;
         pipelineInfo.pDepthStencilState = &configInfo.DepthStencilInfo;
-        pipelineInfo.pDynamicState = nullptr;
+        pipelineInfo.pDynamicState = &configInfo.DynamicStateInfo;
 
         pipelineInfo.layout = configInfo.PipelineLayout;
         pipelineInfo.renderPass = configInfo.RenderPass;
         pipelineInfo.subpass = configInfo.Subpass;
 
-        pipelineInfo.basePipelineHandle = VK_NULL_HANDLE; // Optional
         pipelineInfo.basePipelineIndex = -1;              // Optional
+        pipelineInfo.basePipelineHandle = VK_NULL_HANDLE; // Optional
 
         if (vkCreateGraphicsPipelines(device.VulkanDevice,
                                       VK_NULL_HANDLE,
@@ -186,13 +183,8 @@ namespace XIV {
                                       &pipelineInfo,
                                       nullptr,
                                       &graphicsPipeline) != VK_SUCCESS) {
-            throw std::runtime_error("Failed to create graphics pipeline.");
+            throw std::runtime_error("failed to create graphics pipeline");
         }
-
-        vkDestroyShaderModule(device.VulkanDevice, fragShaderModule, nullptr);
-        vkDestroyShaderModule(device.VulkanDevice, vertShaderModule, nullptr);
-        fragShaderModule = VK_NULL_HANDLE;
-        vertShaderModule = VK_NULL_HANDLE;
     }
 
     void Pipeline::CreateShaderModule(const std::vector<char> &code, VkShaderModule *shaderModule) {

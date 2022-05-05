@@ -13,8 +13,6 @@ namespace XIV {
         PipelineConfigInfo(const PipelineConfigInfo &) = delete;
         PipelineConfigInfo &operator=(const PipelineConfigInfo &) = delete;
 
-        VkViewport Viewport;
-        VkRect2D Scissor;
         VkPipelineViewportStateCreateInfo ViewportInfo;
         VkPipelineInputAssemblyStateCreateInfo InputAssemblyInfo;
         VkPipelineRasterizationStateCreateInfo RasterizationInfo;
@@ -22,9 +20,11 @@ namespace XIV {
         VkPipelineColorBlendAttachmentState ColorBlendAttachment;
         VkPipelineColorBlendStateCreateInfo ColorBlendInfo;
         VkPipelineDepthStencilStateCreateInfo DepthStencilInfo;
+        std::vector<VkDynamicState> DynamicStateEnables;
+        VkPipelineDynamicStateCreateInfo DynamicStateInfo;
         VkPipelineLayout PipelineLayout = nullptr;
         VkRenderPass RenderPass = nullptr;
-        u32 Subpass = 0;
+        uint32_t Subpass = 0;
     };
 
     class Pipeline {
@@ -35,9 +35,9 @@ namespace XIV {
                  const PipelineConfigInfo &configInfo);
         ~Pipeline();
         Pipeline(const Pipeline &) = delete;
-        void operator=(const Pipeline &) = delete;
+        Pipeline &operator=(const Pipeline &) = delete;
 
-        static void DefaultConfigInfo(PipelineConfigInfo &configInfo, u32 width, u32 height);
+        static void DefaultConfigInfo(PipelineConfigInfo &configInfo);
 
         void Bind(VkCommandBuffer commandBuffer);
 

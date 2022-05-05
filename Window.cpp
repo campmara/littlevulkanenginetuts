@@ -18,11 +18,20 @@ namespace XIV {
         }
     }
 
+    void Window::OnFrameBufferResized(GLFWwindow *window, int width, int height) {
+        auto windowPtr = reinterpret_cast<Window *>(glfwGetWindowUserPointer(window));
+        windowPtr->WasFrameBufferResized = true;
+        windowPtr->Width = width;
+        windowPtr->Height = height;
+    }
+
     void Window::InitWindow() {
         glfwInit();
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
         window = glfwCreateWindow(Width, Height, name, nullptr, nullptr);
+        glfwSetWindowUserPointer(window, this);
+        glfwSetFramebufferSizeCallback(window, OnFrameBufferResized);
     }
 } // namespace XIV

@@ -6,6 +6,7 @@
 
 #include <vulkan/vulkan.h>
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -15,41 +16,42 @@ namespace XIV {
         static constexpr int MAX_FRAMES_IN_FLIGHT = 2;
 
         SwapChain(Device &device, VkExtent2D windowExtent);
+        SwapChain(Device &device, VkExtent2D windowExtent, std::shared_ptr<SwapChain> previous);
         ~SwapChain();
         SwapChain(const SwapChain &) = delete;
-        void operator=(const SwapChain &) = delete;
+        SwapChain &operator=(const SwapChain &) = delete;
 
         size_t GetImageCount() {
-            return swapChainImages.size();
+            return images.size();
         }
 
         u32 Width() {
-            return SwapChainExtent.width;
+            return Extent.width;
         }
 
         u32 Height() {
-            return SwapChainExtent.height;
+            return Extent.height;
         }
 
         float GetExtentAspectRatio() {
-            return static_cast<float>(SwapChainExtent.width) /
-                   static_cast<float>(SwapChainExtent.height);
+            return static_cast<float>(Extent.width) / static_cast<float>(Extent.height);
         }
 
         VkFormat FindDepthFormat();
         VkResult AcquireNextImage(uint32_t *imageIndex);
         VkResult SubmitCommandBuffers(const VkCommandBuffer *buffers, uint32_t *imageIndex);
 
-        VkFormat SwapChainImageFormat;
-        VkExtent2D SwapChainExtent;
+        VkFormat ImageFormat;
+        VkExtent2D Extent;
 
-        std::vector<VkFramebuffer> SwapChainFramebuffers;
-        std::vector<VkImageView> SwapChainImageViews;
+        std::vector<VkFramebuffer> Framebuffers;
+        std::vector<VkImageView> ImageViews;
 
         VkRenderPass RenderPass;
 
     private:
         // Vulkan-specific
+        void Init();
         void CreateSwapChain();
         void CreateImageViews();
         void CreateDepthResources();
@@ -65,11 +67,12 @@ namespace XIV {
         VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities);
 
         VkSwapchainKHR swapChain;
+        std::shared_ptr<SwapChain> oldSwapChain;
 
         std::vector<VkImage> depthImages;
         std::vector<VkDeviceMemory> depthImageMemories;
         std::vector<VkImageView> depthImageViews;
-        std::vector<VkImage> swapChainImages;
+        std::vector<VkImage> images;
 
         std::vector<VkSemaphore> imageAvailableSemaphores;
         std::vector<VkSemaphore> renderFinishedSemaphores;

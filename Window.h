@@ -14,8 +14,9 @@ namespace XIV {
         Window(const Window &) = delete;
         Window &operator=(const Window &) = delete;
 
-        const int Width;
-        const int Height;
+        int Width;
+        int Height;
+        bool WasFrameBufferResized = false;
 
         bool ShouldClose() {
             return glfwWindowShouldClose(window);
@@ -28,6 +29,7 @@ namespace XIV {
         void CreateSurface(VkInstance instance, VkSurfaceKHR *surface);
 
     private:
+        static void OnFrameBufferResized(GLFWwindow *window, int width, int height);
         void InitWindow();
 
         const char *name;
