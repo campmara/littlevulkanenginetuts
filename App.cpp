@@ -5,6 +5,7 @@
 
 namespace XIV {
     App::App() {
+        LoadModels();
         CreatePipelineLayout();
         CreatePipeline();
         CreateCommandBuffers();
@@ -21,6 +22,17 @@ namespace XIV {
         }
 
         vkDeviceWaitIdle(device.VulkanDevice);
+    }
+
+    void App::LoadModels() {
+        // just a triangle
+        // std::vector<Model::Vertex> vertices{{{0.0f, -0.5f}}, {{0.5f, 0.5f}}, {{-0.5f, 0.5f}}};
+
+        // sierpinski triangle
+        std::vector<Model::Vertex> vertices{};
+        Sierpinski(vertices, 5, {-0.5f, 0.5f}, {0.5f, 0.5f}, {0.0f, -0.5f});
+
+        model = std::make_unique<Model>(device, vertices);
     }
 
     void App::CreatePipelineLayout() {
@@ -88,7 +100,8 @@ namespace XIV {
             vkCmdBeginRenderPass(commandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
             pipeline->Bind(commandBuffers[i]);
-            vkCmdDraw(commandBuffers[i], 3, 1, 0, 0);
+            model->Bind(commandBuffers[i]);
+            model->Draw(commandBuffers[i]);
 
             vkCmdEndRenderPass(commandBuffers[i]);
             if (vkEndCommandBuffer(commandBuffers[i]) != VK_SUCCESS) {
@@ -107,6 +120,25 @@ namespace XIV {
         result = swapChain.SubmitCommandBuffers(&commandBuffers[imageIndex], &imageIndex);
         if (result != VK_SUCCESS) {
             throw std::runtime_error("failed to present swap chain image!");
+        }
+    }
+
+    void App::Sierpinski(std::vector<Model::Vertex> &vertices,
+                         int depth,
+                         glm::vec2 left,
+                         glm::vec2 right,
+                         glm::vec2 top) {
+        if (depth <= 0) {
+            vertices.push_back({top});
+            vertices.push_back({right});
+            vertices.push_back({left});
+        } else {
+            auto leftTop = 0.5f * (left + top);
+            auto rightTop = 0.5f * (right + top);
+            auto leftRight = 0.5f * (left + right);
+            Sierpinski(vertices, depth - 1, left, leftRight, leftTop);
+            Sierpinski(vertices, depth - 1, leftRight, right, rightTop);
+            Sierpinski(vertices, depth - 1, leftTop, rightTop, top);
         }
     }
 } // namespace XIV

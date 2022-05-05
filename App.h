@@ -2,6 +2,7 @@
 #define APP_H
 
 #include "Device.h"
+#include "Model.h"
 #include "Pipeline.h"
 #include "SwapChain.h"
 #include "Window.h"
@@ -23,10 +24,18 @@ namespace XIV {
         void Run();
 
     private:
+        void LoadModels();
         void CreatePipelineLayout();
         void CreatePipeline();
         void CreateCommandBuffers();
         void DrawFrame();
+
+        // just for fun
+        void Sierpinski(std::vector<Model::Vertex> &vertices,
+                        int depth,
+                        glm::vec2 left,
+                        glm::vec2 right,
+                        glm::vec2 top);
 
         Window window{WIDTH, HEIGHT, "AYO VULKAN!!!"};
         Device device{window};
@@ -36,6 +45,7 @@ namespace XIV {
         VkPipelineLayout pipelineLayout;
 
         std::vector<VkCommandBuffer> commandBuffers;
+        std::unique_ptr<Model> model;
     };
 } // namespace XIV
 

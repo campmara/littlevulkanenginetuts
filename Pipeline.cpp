@@ -1,4 +1,5 @@
 #include "Pipeline.h"
+#include "Model.h"
 
 #include <cassert>
 #include <fstream>
@@ -35,6 +36,12 @@ namespace XIV {
 
         configInfo.Scissor.offset = {0, 0};
         configInfo.Scissor.extent = {width, height};
+
+        configInfo.ViewportInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+        configInfo.ViewportInfo.viewportCount = 1;
+        configInfo.ViewportInfo.pViewports = &configInfo.Viewport;
+        configInfo.ViewportInfo.scissorCount = 1;
+        configInfo.ViewportInfo.pScissors = &configInfo.Scissor;
 
         configInfo.RasterizationInfo.sType =
             VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
@@ -142,32 +149,29 @@ namespace XIV {
         shaderStages[1].pNext = nullptr;
         shaderStages[1].pSpecializationInfo = nullptr;
 
+        auto bindingDescriptions = Model::Vertex::GetBindingDescriptions();
+        auto attributeDescriptions = Model::Vertex::GetAttributeDescriptions();
         VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
         vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-        vertexInputInfo.vertexBindingDescriptionCount = 0;
-        vertexInputInfo.pVertexBindingDescriptions = nullptr; // Optional
-        vertexInputInfo.vertexAttributeDescriptionCount = 0;
-        vertexInputInfo.pVertexAttributeDescriptions = nullptr; // Optional
+        vertexInputInfo.vertexBindingDescriptionCount =
+            static_cast<u32>(attributeDescriptions.size());
+        vertexInputInfo.vertexAttributeDescriptionCount =
+            static_cast<u32>(bindingDescriptions.size());
+        vertexInputInfo.pVertexBindingDescriptions = bindingDescriptions.data();     // Optional
+        vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data(); // Optional
 
-        VkPipelineViewportStateCreateInfo viewportInfo{};
-        viewportInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
-        viewportInfo.viewportCount = 1;
-        viewportInfo.pViewports = &configInfo.Viewport;
-        viewportInfo.scissorCount = 1;
-        viewportInfo.pScissors = &configInfo.Scissor;
-
-        VkGraphicsPipelineCreateInfo pipelineInfo = {};
+        VkGraphicsPipelineCreateInfo pipelineInfo{};
         pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
         pipelineInfo.stageCount = 2;
         pipelineInfo.pStages = shaderStages;
         pipelineInfo.pVertexInputState = &vertexInputInfo;
         pipelineInfo.pInputAssemblyState = &configInfo.InputAssemblyInfo;
-        pipelineInfo.pViewportState = &viewportInfo;
+        pipelineInfo.pViewportState = &configInfo.ViewportInfo;
         pipelineInfo.pRasterizationState = &configInfo.RasterizationInfo;
         pipelineInfo.pMultisampleState = &configInfo.MultisampleInfo;
         pipelineInfo.pColorBlendState = &configInfo.ColorBlendInfo;
-        pipelineInfo.pDynamicState = nullptr; // Optional
         pipelineInfo.pDepthStencilState = &configInfo.DepthStencilInfo;
+        pipelineInfo.pDynamicState = nullptr;
 
         pipelineInfo.layout = configInfo.PipelineLayout;
         pipelineInfo.renderPass = configInfo.RenderPass;
