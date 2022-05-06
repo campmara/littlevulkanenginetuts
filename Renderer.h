@@ -21,6 +21,10 @@ namespace XIV {
             return swapChain->RenderPass;
         }
 
+        float GetAspectRatio() const {
+            return swapChain->GetExtentAspectRatio();
+        }
+
         VkCommandBuffer GetCurrentCommandBuffer() const {
             assert(IsFrameStarted && "Cannot get command buffer when frame not in progress");
             return commandBuffers[currentFrameIndex];

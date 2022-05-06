@@ -59,7 +59,8 @@ namespace XIV {
     }
 
     void SimpleRenderSystem::RenderGameObjects(VkCommandBuffer commandBuffer,
-                                               std::vector<GameObject> &gameObjects) {
+                                               std::vector<GameObject> &gameObjects,
+                                               const Camera &camera) {
         pipeline->Bind(commandBuffer);
 
         for (auto &obj : gameObjects) {
@@ -70,7 +71,7 @@ namespace XIV {
 
             SimplePushConstantData push{};
             push.color = obj.Color;
-            push.transform = obj.Transform.Mat4();
+            push.transform = camera.ProjectionMatrix * obj.Transform.Mat4();
 
             vkCmdPushConstants(commandBuffer,
                                pipelineLayout,

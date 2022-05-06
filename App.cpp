@@ -1,4 +1,5 @@
 #include "App.h"
+#include "Camera.h"
 #include "SimpleRenderSystem.h"
 
 #define GLM_FORCE_RADIANS
@@ -18,12 +19,18 @@ namespace XIV {
 
     void App::Run() {
         SimpleRenderSystem simpleRenderSystem{device, renderer.GetSwapChainRenderPass()};
+        Camera camera{};
 
         while (!window.ShouldClose()) {
             glfwPollEvents();
+
+            float aspect = renderer.GetAspectRatio();
+            // camera.SetOrthographicProjection(-aspect, aspect, -1, 1, -1, 1);
+            camera.SetPerspectiveProjection(glm::radians(50.0f), aspect, 0.1f, 10.0f);
+
             if (auto commandBuffer = renderer.BeginFrame()) {
                 renderer.BeginSwapChainRenderPass(commandBuffer);
-                simpleRenderSystem.RenderGameObjects(commandBuffer, gameObjects);
+                simpleRenderSystem.RenderGameObjects(commandBuffer, gameObjects, camera);
                 renderer.EndSwapChainRenderPass(commandBuffer);
                 renderer.EndFrame();
             }
@@ -93,7 +100,7 @@ namespace XIV {
         std::shared_ptr<Model> model = CreateCubeModel(device, {0.0f, 0.0f, 0.0f});
         auto cube = GameObject::CreateGameObject();
         cube.Model = model;
-        cube.Transform.Translation = {0.0f, 0.0f, 0.5f};
+        cube.Transform.Translation = {0.0f, 0.0f, 2.5f};
         cube.Transform.Scale = {0.5f, 0.5f, 0.5f};
 
         gameObjects.push_back(std::move(cube));
