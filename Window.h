@@ -19,7 +19,7 @@ namespace XIV {
         bool WasFrameBufferResized = false;
 
         bool ShouldClose() {
-            return glfwWindowShouldClose(window);
+            return glfwWindowShouldClose(GlfwWindow);
         }
 
         VkExtent2D GetBoundsAsExtent() {
@@ -28,12 +28,13 @@ namespace XIV {
 
         void CreateSurface(VkInstance instance, VkSurfaceKHR *surface);
 
+        GLFWwindow *GlfwWindow;
+
     private:
         static void OnFrameBufferResized(GLFWwindow *window, int width, int height);
         void InitWindow();
 
         const char *name;
-        GLFWwindow *window;
     };
 } // namespace XIV
 

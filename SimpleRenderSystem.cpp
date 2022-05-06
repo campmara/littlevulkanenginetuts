@@ -66,11 +66,6 @@ namespace XIV {
         auto projectionView = camera.ProjectionMatrix * camera.ViewMatrix;
 
         for (auto &obj : gameObjects) {
-            obj.Transform.Rotation.y =
-                glm::mod(obj.Transform.Rotation.y + 0.01f, glm::two_pi<float>());
-            obj.Transform.Rotation.x =
-                glm::mod(obj.Transform.Rotation.x + 0.005f, glm::two_pi<float>());
-
             SimplePushConstantData push{};
             push.color = obj.Color;
             push.transform = projectionView * obj.Transform.Mat4();

@@ -1,4 +1,5 @@
 #include "App.h"
+#include "KeyboardMovementController.h"
 #include "Camera.h"
 #include "SimpleRenderSystem.h"
 
@@ -8,6 +9,8 @@
 #include <glm/gtc/constants.hpp>
 
 #include <array>
+#include <cassert>
+#include <chrono>
 #include <stdexcept>
 
 namespace XIV {
@@ -20,13 +23,26 @@ namespace XIV {
     void App::Run() {
         SimpleRenderSystem simpleRenderSystem{device, renderer.GetSwapChainRenderPass()};
         Camera camera{};
-        camera.SetViewTarget(glm::vec3(-1.0f, -2.0f, -2.0f), glm::vec3(0.0f, 0.0f, 2.5f));
+
+        auto viewerObject = GameObject::CreateGameObject();
+        KeyboardMovementController cameraController{};
+
+        // dt stuff
+        auto currentTime = std::chrono::high_resolution_clock::now();
 
         while (!window.ShouldClose()) {
             glfwPollEvents();
 
+            auto newTime = std::chrono::high_resolution_clock::now();
+            float frameTime =
+                std::chrono::duration<float, std::chrono::seconds::period>(newTime - currentTime)
+                    .count();
+            currentTime = newTime;
+
+            cameraController.MoveInPlaneXZ(window.GlfwWindow, frameTime, viewerObject);
+            camera.SetViewXYZ(viewerObject.Transform.Translation, viewerObject.Transform.Rotation);
+
             float aspect = renderer.GetAspectRatio();
-            // camera.SetOrthographicProjection(-aspect, aspect, -1, 1, -1, 1);
             camera.SetPerspectiveProjection(glm::radians(50.0f), aspect, 0.1f, 10.0f);
 
             if (auto commandBuffer = renderer.BeginFrame()) {

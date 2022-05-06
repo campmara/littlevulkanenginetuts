@@ -8,12 +8,12 @@ namespace XIV {
     }
 
     Window::~Window() {
-        glfwDestroyWindow(window);
+        glfwDestroyWindow(GlfwWindow);
         glfwTerminate();
     }
 
     void Window::CreateSurface(VkInstance instance, VkSurfaceKHR *surface) {
-        if (glfwCreateWindowSurface(instance, window, nullptr, surface) != VK_SUCCESS) {
+        if (glfwCreateWindowSurface(instance, GlfwWindow, nullptr, surface) != VK_SUCCESS) {
             throw std::runtime_error("Failed to create window surface.");
         }
     }
@@ -30,8 +30,8 @@ namespace XIV {
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
-        window = glfwCreateWindow(Width, Height, name, nullptr, nullptr);
-        glfwSetWindowUserPointer(window, this);
-        glfwSetFramebufferSizeCallback(window, OnFrameBufferResized);
+        GlfwWindow = glfwCreateWindow(Width, Height, name, nullptr, nullptr);
+        glfwSetWindowUserPointer(GlfwWindow, this);
+        glfwSetFramebufferSizeCallback(GlfwWindow, OnFrameBufferResized);
     }
 } // namespace XIV
