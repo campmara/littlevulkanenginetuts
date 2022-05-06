@@ -4,8 +4,7 @@
 #include "Device.h"
 #include "GameObject.h"
 #include "Model.h"
-#include "Pipeline.h"
-#include "SwapChain.h"
+#include "Renderer.h"
 #include "Window.h"
 
 #include <memory>
@@ -26,21 +25,10 @@ namespace XIV {
 
     private:
         void LoadGameObjects();
-        void CreatePipelineLayout();
-        void CreatePipeline();
-        void CreateCommandBuffers();
-        void FreeCommandBuffers();
-        void DrawFrame();
-        void RecreateSwapChain();
-        void RecordCommandBuffer(int imageIndex);
-        void RenderGameObjects(VkCommandBuffer commandBuffer);
 
         Window window{WIDTH, HEIGHT, "AYO VULKAN!!!"};
         Device device{window};
-        std::unique_ptr<SwapChain> swapChain;
-        std::unique_ptr<Pipeline> pipeline;
-        VkPipelineLayout pipelineLayout;
-        std::vector<VkCommandBuffer> commandBuffers;
+        Renderer renderer{window, device};
         std::vector<GameObject> gameObjects;
     };
 } // namespace XIV

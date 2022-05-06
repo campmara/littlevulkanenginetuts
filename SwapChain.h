@@ -41,7 +41,12 @@ namespace XIV {
         VkResult AcquireNextImage(uint32_t *imageIndex);
         VkResult SubmitCommandBuffers(const VkCommandBuffer *buffers, uint32_t *imageIndex);
 
+        bool CompareSwapFormats(const SwapChain &swapChain) const {
+            return swapChain.DepthFormat == DepthFormat && swapChain.ImageFormat == ImageFormat;
+        }
+
         VkFormat ImageFormat;
+        VkFormat DepthFormat;
         VkExtent2D Extent;
 
         std::vector<VkFramebuffer> Framebuffers;

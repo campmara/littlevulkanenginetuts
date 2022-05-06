@@ -213,6 +213,8 @@ namespace XIV {
 
     void SwapChain::CreateDepthResources() {
         VkFormat depthFormat = FindDepthFormat();
+        DepthFormat = depthFormat;
+        VkExtent2D swapChainExtent = Extent;
 
         depthImages.resize(GetImageCount());
         depthImageMemories.resize(GetImageCount());
@@ -222,8 +224,8 @@ namespace XIV {
             VkImageCreateInfo imageInfo{};
             imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
             imageInfo.imageType = VK_IMAGE_TYPE_2D;
-            imageInfo.extent.width = Extent.width;
-            imageInfo.extent.height = Extent.height;
+            imageInfo.extent.width = swapChainExtent.width;
+            imageInfo.extent.height = swapChainExtent.height;
             imageInfo.extent.depth = 1;
             imageInfo.mipLevels = 1;
             imageInfo.arrayLayers = 1;
@@ -294,13 +296,15 @@ namespace XIV {
         subpass.pDepthStencilAttachment = &depthAttachmentRef;
 
         VkSubpassDependency dependency = {};
-
         dependency.dstSubpass = 0;
-        dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-        dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+        dependency.dstAccessMask =
+            VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+        dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT |
+                                  VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
         dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
         dependency.srcAccessMask = 0;
-        dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+        dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT |
+                                  VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
 
         std::array<VkAttachmentDescription, 2> attachments = {colorAttachment, depthAttachment};
         VkRenderPassCreateInfo renderPassInfo = {};
