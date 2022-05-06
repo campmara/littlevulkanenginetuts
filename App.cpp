@@ -20,6 +20,7 @@ namespace XIV {
     void App::Run() {
         SimpleRenderSystem simpleRenderSystem{device, renderer.GetSwapChainRenderPass()};
         Camera camera{};
+        camera.SetViewTarget(glm::vec3(-1.0f, -2.0f, -2.0f), glm::vec3(0.0f, 0.0f, 2.5f));
 
         while (!window.ShouldClose()) {
             glfwPollEvents();

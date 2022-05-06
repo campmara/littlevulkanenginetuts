@@ -63,6 +63,8 @@ namespace XIV {
                                                const Camera &camera) {
         pipeline->Bind(commandBuffer);
 
+        auto projectionView = camera.ProjectionMatrix * camera.ViewMatrix;
+
         for (auto &obj : gameObjects) {
             obj.Transform.Rotation.y =
                 glm::mod(obj.Transform.Rotation.y + 0.01f, glm::two_pi<float>());
@@ -71,7 +73,7 @@ namespace XIV {
 
             SimplePushConstantData push{};
             push.color = obj.Color;
-            push.transform = camera.ProjectionMatrix * obj.Transform.Mat4();
+            push.transform = projectionView * obj.Transform.Mat4();
 
             vkCmdPushConstants(commandBuffer,
                                pipelineLayout,
