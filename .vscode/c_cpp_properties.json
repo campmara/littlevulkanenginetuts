@@ -6,7 +6,8 @@
                 "${workspaceFolder}/**",
                 "C:/work/lib/VulkanSDK/1.3.211.0/Include",
                 "C:/work/lib/glfw-3.3.7.bin.WIN64/include",
-                "C:/work/lib/glm"
+                "C:/work/lib/glm",
+                "C:/work/lib/tinyobjloader"
             ],
             "defines": [
                 "_DEBUG",

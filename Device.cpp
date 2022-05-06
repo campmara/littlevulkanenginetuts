@@ -221,7 +221,6 @@ namespace XIV {
     }
 
     void Device::CreateInstance() {
-        // Guard
         if (VALIDATION_LAYERS_ENABLED && !CheckValidationLayerSupport()) {
             throw std::runtime_error("Validation layers requested, but not available.");
         }
@@ -267,7 +266,6 @@ namespace XIV {
     }
 
     void Device::SetupDebugMessenger() {
-        // Guard
         if (!VALIDATION_LAYERS_ENABLED) {
             return;
         }

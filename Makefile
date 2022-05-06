@@ -2,7 +2,7 @@
 
 include .env
 
-INC = -I. -I$(VULKAN_SDK_PATH)/include -I$(GLFW_PATH)/include -I$(GLM_PATH)
+INC = -I. -I$(VULKAN_SDK_PATH)/include -I$(TINYOBJ_PATH) -I$(GLFW_PATH)/include -I$(GLM_PATH)
 LIB = -L$(VULKAN_SDK_PATH)/Lib -L$(GLFW_PATH)/lib-mingw-w64
 
 CFLAGS = -std=c++17 -Wall -Wno-unknown-pragmas -O2

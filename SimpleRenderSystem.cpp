@@ -1,9 +1,5 @@
 #include "SimpleRenderSystem.h"
-
-#define GLM_FORCE_RADIANS
-#define GLM_FORCE_DEPTH_ZERO_TO_ONE
-#include <glm/glm.hpp>
-#include <glm/gtc/constants.hpp>
+#include "Math.h"
 
 #include <array>
 #include <cassert>
@@ -11,8 +7,8 @@
 
 namespace XIV {
     struct SimplePushConstantData {
-        glm::mat4 transform{1.0f};
-        alignas(16) glm::vec3 color;
+        Mat4 Transform{1.0f};
+        Mat4 NormalMatrix{1.0f};
     };
 
     SimpleRenderSystem::SimpleRenderSystem(Device &device, VkRenderPass renderPass)
@@ -67,9 +63,9 @@ namespace XIV {
 
         for (auto &obj : gameObjects) {
             SimplePushConstantData push{};
-            push.color = obj.Color;
-            push.transform = projectionView * obj.Transform.Mat4();
-
+            auto modelMatrix = obj.Transform.Matrix4();
+            push.Transform = projectionView * modelMatrix;
+            push.NormalMatrix = obj.Transform.NormalMatrix();
             vkCmdPushConstants(commandBuffer,
                                pipelineLayout,
                                VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,

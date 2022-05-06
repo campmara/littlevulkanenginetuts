@@ -2,11 +2,7 @@
 #include "KeyboardMovementController.h"
 #include "Camera.h"
 #include "SimpleRenderSystem.h"
-
-#define GLM_FORCE_RADIANS
-#define GLM_FORCE_DEPTH_ZERO_TO_ONE
-#include <glm/glm.hpp>
-#include <glm/gtc/constants.hpp>
+#include "Math.h"
 
 #include <array>
 #include <cassert>
@@ -43,7 +39,7 @@ namespace XIV {
             camera.SetViewXYZ(viewerObject.Transform.Translation, viewerObject.Transform.Rotation);
 
             float aspect = renderer.GetAspectRatio();
-            camera.SetPerspectiveProjection(glm::radians(50.0f), aspect, 0.1f, 10.0f);
+            camera.SetPerspectiveProjection(Math::Deg2Rad(50.0f), aspect, 0.1f, 10.0f);
 
             if (auto commandBuffer = renderer.BeginFrame()) {
                 renderer.BeginSwapChainRenderPass(commandBuffer);
@@ -56,70 +52,19 @@ namespace XIV {
         vkDeviceWaitIdle(device.VulkanDevice);
     }
 
-    // temporary helper function, creates a 1x1x1 cube centered at offset
-    std::unique_ptr<Model> CreateCubeModel(Device &device, glm::vec3 offset) {
-        std::vector<Model::Vertex> vertices{
-            // left face (white)
-            {{-.5f, -.5f, -.5f}, {.9f, .9f, .9f}},
-            {{-.5f, .5f, .5f}, {.9f, .9f, .9f}},
-            {{-.5f, -.5f, .5f}, {.9f, .9f, .9f}},
-            {{-.5f, -.5f, -.5f}, {.9f, .9f, .9f}},
-            {{-.5f, .5f, -.5f}, {.9f, .9f, .9f}},
-            {{-.5f, .5f, .5f}, {.9f, .9f, .9f}},
-
-            // right face (yellow)
-            {{.5f, -.5f, -.5f}, {.8f, .8f, .1f}},
-            {{.5f, .5f, .5f}, {.8f, .8f, .1f}},
-            {{.5f, -.5f, .5f}, {.8f, .8f, .1f}},
-            {{.5f, -.5f, -.5f}, {.8f, .8f, .1f}},
-            {{.5f, .5f, -.5f}, {.8f, .8f, .1f}},
-            {{.5f, .5f, .5f}, {.8f, .8f, .1f}},
-
-            // top face (orange, remember y axis points down)
-            {{-.5f, -.5f, -.5f}, {.9f, .6f, .1f}},
-            {{.5f, -.5f, .5f}, {.9f, .6f, .1f}},
-            {{-.5f, -.5f, .5f}, {.9f, .6f, .1f}},
-            {{-.5f, -.5f, -.5f}, {.9f, .6f, .1f}},
-            {{.5f, -.5f, -.5f}, {.9f, .6f, .1f}},
-            {{.5f, -.5f, .5f}, {.9f, .6f, .1f}},
-
-            // bottom face (red)
-            {{-.5f, .5f, -.5f}, {.8f, .1f, .1f}},
-            {{.5f, .5f, .5f}, {.8f, .1f, .1f}},
-            {{-.5f, .5f, .5f}, {.8f, .1f, .1f}},
-            {{-.5f, .5f, -.5f}, {.8f, .1f, .1f}},
-            {{.5f, .5f, -.5f}, {.8f, .1f, .1f}},
-            {{.5f, .5f, .5f}, {.8f, .1f, .1f}},
-
-            // nose face (blue)
-            {{-.5f, -.5f, 0.5f}, {.1f, .1f, .8f}},
-            {{.5f, .5f, 0.5f}, {.1f, .1f, .8f}},
-            {{-.5f, .5f, 0.5f}, {.1f, .1f, .8f}},
-            {{-.5f, -.5f, 0.5f}, {.1f, .1f, .8f}},
-            {{.5f, -.5f, 0.5f}, {.1f, .1f, .8f}},
-            {{.5f, .5f, 0.5f}, {.1f, .1f, .8f}},
-
-            // tail face (green)
-            {{-.5f, -.5f, -0.5f}, {.1f, .8f, .1f}},
-            {{.5f, .5f, -0.5f}, {.1f, .8f, .1f}},
-            {{-.5f, .5f, -0.5f}, {.1f, .8f, .1f}},
-            {{-.5f, -.5f, -0.5f}, {.1f, .8f, .1f}},
-            {{.5f, -.5f, -0.5f}, {.1f, .8f, .1f}},
-            {{.5f, .5f, -0.5f}, {.1f, .8f, .1f}},
-        };
-        for (auto &v : vertices) {
-            v.Position += offset;
-        }
-        return std::make_unique<Model>(device, vertices);
-    }
-
     void App::LoadGameObjects() {
-        std::shared_ptr<Model> model = CreateCubeModel(device, {0.0f, 0.0f, 0.0f});
-        auto cube = GameObject::CreateGameObject();
-        cube.Model = model;
-        cube.Transform.Translation = {0.0f, 0.0f, 2.5f};
-        cube.Transform.Scale = {0.5f, 0.5f, 0.5f};
+        std::shared_ptr<Model> model = Model::CreateModelFromFile(device, "models/flat_vase.obj");
+        auto flatVase = GameObject::CreateGameObject();
+        flatVase.Model = model;
+        flatVase.Transform.Translation = {-.5f, .5f, 2.5f};
+        flatVase.Transform.Scale = {3.f, 1.5f, 3.f};
+        gameObjects.push_back(std::move(flatVase));
 
-        gameObjects.push_back(std::move(cube));
+        model = Model::CreateModelFromFile(device, "models/smooth_vase.obj");
+        auto smoothVase = GameObject::CreateGameObject();
+        smoothVase.Model = model;
+        smoothVase.Transform.Translation = {.5f, .5f, 2.5f};
+        smoothVase.Transform.Scale = {3.f, 1.5f, 3.f};
+        gameObjects.push_back(std::move(smoothVase));
     }
 } // namespace XIV

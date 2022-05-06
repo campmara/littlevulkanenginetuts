@@ -8,6 +8,7 @@
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include <limits>
 
@@ -24,10 +25,6 @@ namespace XIV {
     class Math {
     public:
         // FLOAT
-        static float Clamp(float x, float min, float max) {
-            return glm::clamp(x, min, max);
-        }
-
         static float Pi() {
             return glm::pi<float>();
         }
@@ -40,8 +37,36 @@ namespace XIV {
             return std::numeric_limits<float>::epsilon();
         }
 
+        static float Abs(float x) {
+            return glm::abs(x);
+        }
+
+        static float Clamp(float x, float min, float max) {
+            return glm::clamp(x, min, max);
+        }
+
         static float Mod(float x, float y) {
             return glm::mod(x, y);
+        }
+
+        static float Cos(float x) {
+            return glm::cos(x);
+        }
+
+        static float Sin(float x) {
+            return glm::sin(x);
+        }
+
+        static float Tan(float x) {
+            return glm::tan(x);
+        }
+
+        static float Deg2Rad(float degrees) {
+            return glm::radians(degrees);
+        }
+
+        static float Rad2Deg(float radians) {
+            return glm::degrees(radians);
         }
 
         // VECTOR 2
@@ -53,6 +78,10 @@ namespace XIV {
 
         static float Dot(Vec3 x, Vec3 y) {
             return glm::dot(x, y);
+        }
+
+        static Vec3 Cross(Vec3 x, Vec3 y) {
+            return glm::cross(x, y);
         }
     };
 } // namespace XIV

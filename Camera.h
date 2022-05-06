@@ -1,9 +1,7 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#define GLM_FORCE_RADIANS
-#define GLM_FORCE_DEPTH_ZERO_TO_ONE
-#include <glm/glm.hpp>
+#include "Math.h"
 
 namespace XIV {
     class Camera {
@@ -12,16 +10,12 @@ namespace XIV {
             float left, float right, float top, float bottom, float near, float far);
         void SetPerspectiveProjection(float fovY, float aspect, float near, float far);
 
-        void SetViewDirection(glm::vec3 position,
-                              glm::vec3 direction,
-                              glm::vec3 up = glm::vec3{0.0f, -1.0f, 0.0f});
-        void SetViewTarget(glm::vec3 position,
-                           glm::vec3 target,
-                           glm::vec3 up = glm::vec3{0.0f, -1.0f, 0.0f});
-        void SetViewXYZ(glm::vec3 position, glm::vec3 rotation);
+        void SetViewDirection(Vec3 position, Vec3 direction, Vec3 up = Vec3{0.0f, -1.0f, 0.0f});
+        void SetViewTarget(Vec3 position, Vec3 target, Vec3 up = Vec3{0.0f, -1.0f, 0.0f});
+        void SetViewXYZ(Vec3 position, Vec3 rotation);
 
-        glm::mat4 ProjectionMatrix{1.0f};
-        glm::mat4 ViewMatrix{1.0f};
+        Mat4 ProjectionMatrix{1.0f};
+        Mat4 ViewMatrix{1.0f};
     };
 } // namespace XIV
 
