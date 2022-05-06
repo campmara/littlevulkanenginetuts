@@ -11,8 +11,7 @@
 
 namespace XIV {
     struct SimplePushConstantData {
-        glm::mat2 transform{1.0f};
-        glm::vec2 offset;
+        glm::mat4 transform{1.0f};
         alignas(16) glm::vec3 color;
     };
 
@@ -64,13 +63,14 @@ namespace XIV {
         pipeline->Bind(commandBuffer);
 
         for (auto &obj : gameObjects) {
-            obj.Transform2d.Rotation =
-                glm::mod(obj.Transform2d.Rotation + 0.01f, glm::two_pi<float>());
+            obj.Transform.Rotation.y =
+                glm::mod(obj.Transform.Rotation.y + 0.01f, glm::two_pi<float>());
+            obj.Transform.Rotation.x =
+                glm::mod(obj.Transform.Rotation.x + 0.005f, glm::two_pi<float>());
 
             SimplePushConstantData push{};
-            push.offset = obj.Transform2d.Translation;
             push.color = obj.Color;
-            push.transform = obj.Transform2d.Mat2();
+            push.transform = obj.Transform.Mat4();
 
             vkCmdPushConstants(commandBuffer,
                                pipelineLayout,
