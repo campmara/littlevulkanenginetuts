@@ -2,6 +2,7 @@
 #define APP_H
 
 #include "Device.h"
+#include "GameObject.h"
 #include "Model.h"
 #include "Pipeline.h"
 #include "SwapChain.h"
@@ -24,7 +25,7 @@ namespace XIV {
         void Run();
 
     private:
-        void LoadModels();
+        void LoadGameObjects();
         void CreatePipelineLayout();
         void CreatePipeline();
         void CreateCommandBuffers();
@@ -32,6 +33,7 @@ namespace XIV {
         void DrawFrame();
         void RecreateSwapChain();
         void RecordCommandBuffer(int imageIndex);
+        void RenderGameObjects(VkCommandBuffer commandBuffer);
 
         Window window{WIDTH, HEIGHT, "AYO VULKAN!!!"};
         Device device{window};
@@ -39,7 +41,7 @@ namespace XIV {
         std::unique_ptr<Pipeline> pipeline;
         VkPipelineLayout pipelineLayout;
         std::vector<VkCommandBuffer> commandBuffers;
-        std::unique_ptr<Model> model;
+        std::vector<GameObject> gameObjects;
     };
 } // namespace XIV
 

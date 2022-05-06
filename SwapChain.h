@@ -66,6 +66,9 @@ namespace XIV {
         ChooseSwapPresentMode(const std::vector<VkPresentModeKHR> &availablePresentModes);
         VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities);
 
+        Device &device;
+        VkExtent2D windowExtent;
+
         VkSwapchainKHR swapChain;
         std::shared_ptr<SwapChain> oldSwapChain;
 
@@ -78,9 +81,6 @@ namespace XIV {
         std::vector<VkSemaphore> renderFinishedSemaphores;
         std::vector<VkFence> inFlightFences;
         std::vector<VkFence> imagesInFlight;
-
-        Device &device;
-        VkExtent2D windowExtent;
 
         size_t currentFrame = 0;
     };

@@ -1,11 +1,22 @@
 #include "App.h"
 
+#define GLM_FORCE_RADIANS
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#include <glm/glm.hpp>
+#include <glm/gtc/constants.hpp>
+
 #include <array>
 #include <stdexcept>
 
 namespace XIV {
+    struct SimplePushConstantData {
+        glm::mat2 transform{1.0f};
+        glm::vec2 offset;
+        alignas(16) glm::vec3 color;
+    };
+
     App::App() {
-        LoadModels();
+        LoadGameObjects();
         CreatePipelineLayout();
         RecreateSwapChain();
         CreateCommandBuffers();
@@ -24,20 +35,34 @@ namespace XIV {
         vkDeviceWaitIdle(device.VulkanDevice);
     }
 
-    void App::LoadModels() {
+    void App::LoadGameObjects() {
         std::vector<Model::Vertex> vertices{{{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
                                             {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
                                             {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}};
-        model = std::make_unique<Model>(device, vertices);
+        auto model = std::make_shared<Model>(device, vertices);
+
+        auto triangle = GameObject::CreateGameObject();
+        triangle.Model = model;
+        triangle.Color = {.1f, .8f, .1f};
+        triangle.Transform2d.Translation.x = .2f;
+        triangle.Transform2d.Scale = {2.f, .5f};
+        triangle.Transform2d.Rotation = .25f * glm::two_pi<float>();
+
+        gameObjects.push_back(std::move(triangle));
     }
 
     void App::CreatePipelineLayout() {
+        VkPushConstantRange pushConstantRange{};
+        pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
+        pushConstantRange.offset = 0;
+        pushConstantRange.size = sizeof(SimplePushConstantData);
+
         VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
         pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
         pipelineLayoutInfo.setLayoutCount = 0;
         pipelineLayoutInfo.pSetLayouts = nullptr;
-        pipelineLayoutInfo.pushConstantRangeCount = 0;
-        pipelineLayoutInfo.pPushConstantRanges = nullptr;
+        pipelineLayoutInfo.pushConstantRangeCount = 1;
+        pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
         if (vkCreatePipelineLayout(device.VulkanDevice,
                                    &pipelineLayoutInfo,
                                    nullptr,
@@ -130,6 +155,9 @@ namespace XIV {
     }
 
     void App::RecordCommandBuffer(int imageIndex) {
+        static int frame = 30;
+        frame = (frame + 1) % 100;
+
         VkCommandBufferBeginInfo beginInfo{};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
@@ -146,7 +174,7 @@ namespace XIV {
         renderPassInfo.renderArea.extent = swapChain->Extent;
 
         std::array<VkClearValue, 2> clearValues{};
-        clearValues[0].color = {0.1f, 0.1f, 0.1f, 1.0f};
+        clearValues[0].color = {0.01f, 0.01f, 0.01f, 1.0f};
         clearValues[1].depthStencil = {1.0f, 0};
         renderPassInfo.clearValueCount = static_cast<u32>(clearValues.size());
         renderPassInfo.pClearValues = clearValues.data();
@@ -166,13 +194,34 @@ namespace XIV {
         vkCmdSetViewport(commandBuffers[imageIndex], 0, 1, &viewport);
         vkCmdSetScissor(commandBuffers[imageIndex], 0, 1, &scissor);
 
-        pipeline->Bind(commandBuffers[imageIndex]);
-        model->Bind(commandBuffers[imageIndex]);
-        model->Draw(commandBuffers[imageIndex]);
+        RenderGameObjects(commandBuffers[imageIndex]);
 
         vkCmdEndRenderPass(commandBuffers[imageIndex]);
         if (vkEndCommandBuffer(commandBuffers[imageIndex]) != VK_SUCCESS) {
             throw std::runtime_error("failed to record command buffer!");
+        }
+    }
+
+    void App::RenderGameObjects(VkCommandBuffer commandBuffer) {
+        pipeline->Bind(commandBuffer);
+
+        for (auto &obj : gameObjects) {
+            obj.Transform2d.Rotation =
+                glm::mod(obj.Transform2d.Rotation + 0.01f, glm::two_pi<float>());
+
+            SimplePushConstantData push{};
+            push.offset = obj.Transform2d.Translation;
+            push.color = obj.Color;
+            push.transform = obj.Transform2d.Mat2();
+
+            vkCmdPushConstants(commandBuffer,
+                               pipelineLayout,
+                               VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
+                               0,
+                               sizeof(SimplePushConstantData),
+                               &push);
+            obj.Model->Bind(commandBuffer);
+            obj.Model->Draw(commandBuffer);
         }
     }
 } // namespace XIV
