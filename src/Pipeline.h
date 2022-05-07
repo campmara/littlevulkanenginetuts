@@ -42,7 +42,7 @@ namespace XIV {
         void Bind(VkCommandBuffer commandBuffer);
 
     private:
-        std::vector<char> ReadFile(const std::string &fileName);
+        std::vector<char> ReadFile(const std::string &filePath);
 
         void CreateGraphicsPipeline(const std::string &vertPath,
                                     const std::string &fragPath,

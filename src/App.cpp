@@ -13,7 +13,9 @@
 namespace XIV {
     struct GlobalUbo {
         Mat4 ProjectionView{1.f};
-        Vec3 LightDirection = Math::Normalize(Vec3{1.f, -3.f, -1.f});
+        Vec4 AmbientLightColor{1.0f, 1.0f, 1.0f, 0.02f}; // w is intensity
+        Vec3 LightPosition{-1.0f};
+        alignas(16) Vec4 LightColor{1.0f}; // w is light intensity
     };
 
     App::App() {
@@ -41,7 +43,7 @@ namespace XIV {
 
         auto globalSetLayout =
             DescriptorSetLayout::Builder(device)
-                .AddBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT)
+                .AddBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_ALL_GRAPHICS)
                 .Build();
 
         std::vector<VkDescriptorSet> globalDescriptorSets(SwapChain::MAX_FRAMES_IN_FLIGHT);
@@ -58,6 +60,7 @@ namespace XIV {
         Camera camera{};
 
         auto viewerObject = GameObject::CreateGameObject();
+        viewerObject.Transform.Translation.z = -2.5f;
         KeyboardMovementController cameraController{};
 
         // dt stuff
@@ -76,7 +79,7 @@ namespace XIV {
             camera.SetViewXYZ(viewerObject.Transform.Translation, viewerObject.Transform.Rotation);
 
             float aspect = renderer.GetAspectRatio();
-            camera.SetPerspectiveProjection(Math::Deg2Rad(50.0f), aspect, 0.1f, 10.0f);
+            camera.SetPerspectiveProjection(Math::Deg2Rad(50.0f), aspect, 0.1f, 100.0f);
 
             if (auto commandBuffer = renderer.BeginFrame()) {
                 int frameIndex = renderer.GetFrameIndex();
@@ -84,7 +87,8 @@ namespace XIV {
                                     frameTime,
                                     commandBuffer,
                                     camera,
-                                    globalDescriptorSets[frameIndex]};
+                                    globalDescriptorSets[frameIndex],
+                                    gameObjects};
 
                 // update
                 GlobalUbo ubo{};
@@ -94,7 +98,7 @@ namespace XIV {
 
                 // render
                 renderer.BeginSwapChainRenderPass(commandBuffer);
-                simpleRenderSystem.RenderGameObjects(frameInfo, gameObjects);
+                simpleRenderSystem.RenderGameObjects(frameInfo);
                 renderer.EndSwapChainRenderPass(commandBuffer);
                 renderer.EndFrame();
             }
@@ -107,15 +111,22 @@ namespace XIV {
         std::shared_ptr<Model> model = Model::CreateModelFromFile(device, "models/flat_vase.obj");
         auto flatVase = GameObject::CreateGameObject();
         flatVase.Model = model;
-        flatVase.Transform.Translation = {-.5f, .5f, 2.5f};
+        flatVase.Transform.Translation = {-.5f, .5f, 0.0f};
         flatVase.Transform.Scale = {3.f, 1.5f, 3.f};
-        gameObjects.push_back(std::move(flatVase));
+        gameObjects.emplace(flatVase.Id, std::move(flatVase));
 
         model = Model::CreateModelFromFile(device, "models/smooth_vase.obj");
         auto smoothVase = GameObject::CreateGameObject();
         smoothVase.Model = model;
-        smoothVase.Transform.Translation = {.5f, .5f, 2.5f};
+        smoothVase.Transform.Translation = {.5f, .5f, 0.0f};
         smoothVase.Transform.Scale = {3.f, 1.5f, 3.f};
-        gameObjects.push_back(std::move(smoothVase));
+        gameObjects.emplace(smoothVase.Id, std::move(smoothVase));
+
+        model = Model::CreateModelFromFile(device, "models/quad.obj");
+        auto floor = GameObject::CreateGameObject();
+        floor.Model = model;
+        floor.Transform.Translation = {0.f, .5f, 0.f};
+        floor.Transform.Scale = {3.f, 1.f, 3.f};
+        gameObjects.emplace(floor.Id, std::move(floor));
     }
 } // namespace XIV

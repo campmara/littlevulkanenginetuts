@@ -5,6 +5,7 @@
 #include "Math.h"
 
 #include <memory>
+#include <unordered_map>
 
 namespace XIV {
     struct TransformComponent {
@@ -18,6 +19,7 @@ namespace XIV {
     class GameObject {
     public:
         using id_t = unsigned int;
+        using Map = std::unordered_map<id_t, GameObject>;
 
         static GameObject CreateGameObject() {
             static id_t currentId = 0;

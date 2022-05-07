@@ -99,11 +99,12 @@ namespace XIV {
         vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
     }
 
-    std::vector<char> Pipeline::ReadFile(const std::string &fileName) {
-        std::ifstream file{fileName, std::ios::ate | std::ios::binary};
+    std::vector<char> Pipeline::ReadFile(const std::string &filePath) {
+        std::string enginePath = filePath;
+        std::ifstream file{enginePath, std::ios::ate | std::ios::binary};
 
         if (!file.is_open()) {
-            throw std::runtime_error("Failed to open file: " + fileName);
+            throw std::runtime_error("failed to open file: " + enginePath);
         }
 
         size_t fileSize = (size_t)file.tellg();

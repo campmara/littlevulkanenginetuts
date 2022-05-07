@@ -58,8 +58,7 @@ namespace XIV {
                                               pipelineConfig);
     }
 
-    void SimpleRenderSystem::RenderGameObjects(FrameInfo &frameInfo,
-                                               std::vector<GameObject> &gameObjects) {
+    void SimpleRenderSystem::RenderGameObjects(FrameInfo &frameInfo) {
         pipeline->Bind(frameInfo.CommandBuffer);
 
         vkCmdBindDescriptorSets(frameInfo.CommandBuffer,
@@ -71,7 +70,13 @@ namespace XIV {
                                 0,
                                 nullptr);
 
-        for (auto &obj : gameObjects) {
+        for (auto &kv : frameInfo.GameObjects) {
+            // Get the object from the map and check for the model.
+            auto &obj = kv.second;
+            if (obj.Model == nullptr) {
+                continue;
+            }
+
             SimplePushConstantData push{};
             push.ModelMatrix = obj.Transform.Matrix4();
             push.NormalMatrix = obj.Transform.NormalMatrix();

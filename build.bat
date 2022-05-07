@@ -11,4 +11,4 @@ call compile.bat
 popd
 
 :: make and run the executable
-mingw32-make && xiv.exe
+mingw32-make && bin\xiv.exe
