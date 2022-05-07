@@ -54,26 +54,25 @@ namespace XIV {
                                               pipelineConfig);
     }
 
-    void SimpleRenderSystem::RenderGameObjects(VkCommandBuffer commandBuffer,
-                                               std::vector<GameObject> &gameObjects,
-                                               const Camera &camera) {
-        pipeline->Bind(commandBuffer);
+    void SimpleRenderSystem::RenderGameObjects(FrameInfo &frameInfo,
+                                               std::vector<GameObject> &gameObjects) {
+        pipeline->Bind(frameInfo.CommandBuffer);
 
-        auto projectionView = camera.ProjectionMatrix * camera.ViewMatrix;
+        auto projectionView = frameInfo.Camera.ProjectionMatrix * frameInfo.Camera.ViewMatrix;
 
         for (auto &obj : gameObjects) {
             SimplePushConstantData push{};
             auto modelMatrix = obj.Transform.Matrix4();
             push.Transform = projectionView * modelMatrix;
             push.NormalMatrix = obj.Transform.NormalMatrix();
-            vkCmdPushConstants(commandBuffer,
+            vkCmdPushConstants(frameInfo.CommandBuffer,
                                pipelineLayout,
                                VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
                                0,
                                sizeof(SimplePushConstantData),
                                &push);
-            obj.Model->Bind(commandBuffer);
-            obj.Model->Draw(commandBuffer);
+            obj.Model->Bind(frameInfo.CommandBuffer);
+            obj.Model->Draw(frameInfo.CommandBuffer);
         }
     }
 } // namespace XIV

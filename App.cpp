@@ -1,5 +1,6 @@
 #include "App.h"
 #include "KeyboardMovementController.h"
+#include "Buffer.h"
 #include "Camera.h"
 #include "SimpleRenderSystem.h"
 #include "Math.h"
@@ -10,6 +11,11 @@
 #include <stdexcept>
 
 namespace XIV {
+    struct GlobalUbo {
+        Mat4 ProjectionView{1.f};
+        Vec3 LightDirection = Math::Normalize(Vec3{1.f, -3.f, -1.f});
+    };
+
     App::App() {
         LoadGameObjects();
     }
@@ -17,6 +23,18 @@ namespace XIV {
     App::~App() {}
 
     void App::Run() {
+        // Buffer shit
+        Buffer globalUboBuffer{
+            device,
+            sizeof(GlobalUbo),
+            SwapChain::MAX_FRAMES_IN_FLIGHT,
+            VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
+            device.Properties.limits.minUniformBufferOffsetAlignment,
+        };
+        globalUboBuffer.Map();
+
+        // Setup the camera
         SimpleRenderSystem simpleRenderSystem{device, renderer.GetSwapChainRenderPass()};
         Camera camera{};
 
@@ -42,8 +60,18 @@ namespace XIV {
             camera.SetPerspectiveProjection(Math::Deg2Rad(50.0f), aspect, 0.1f, 10.0f);
 
             if (auto commandBuffer = renderer.BeginFrame()) {
+                int frameIndex = renderer.GetFrameIndex();
+                FrameInfo frameInfo{frameIndex, frameTime, commandBuffer, camera};
+
+                // update
+                GlobalUbo ubo{};
+                ubo.ProjectionView = camera.ProjectionMatrix * camera.ViewMatrix;
+                globalUboBuffer.WriteToIndex(&ubo, frameIndex);
+                globalUboBuffer.FlushIndex(frameIndex);
+
+                // render
                 renderer.BeginSwapChainRenderPass(commandBuffer);
-                simpleRenderSystem.RenderGameObjects(commandBuffer, gameObjects, camera);
+                simpleRenderSystem.RenderGameObjects(frameInfo, gameObjects);
                 renderer.EndSwapChainRenderPass(commandBuffer);
                 renderer.EndFrame();
             }
