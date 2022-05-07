@@ -17,6 +17,11 @@ namespace XIV {
     };
 
     App::App() {
+        globalPool =
+            DescriptorPool::Builder(device)
+                .SetMaxSets(SwapChain::MAX_FRAMES_IN_FLIGHT)
+                .AddPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, SwapChain::MAX_FRAMES_IN_FLIGHT)
+                .Build();
         LoadGameObjects();
     }
 
@@ -24,18 +29,32 @@ namespace XIV {
 
     void App::Run() {
         // Buffer shit
-        Buffer globalUboBuffer{
-            device,
-            sizeof(GlobalUbo),
-            SwapChain::MAX_FRAMES_IN_FLIGHT,
-            VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
-            device.Properties.limits.minUniformBufferOffsetAlignment,
-        };
-        globalUboBuffer.Map();
+        std::vector<std::unique_ptr<Buffer>> uboBuffers(SwapChain::MAX_FRAMES_IN_FLIGHT);
+        for (size_t i = 0; i < uboBuffers.size(); ++i) {
+            uboBuffers[i] = std::make_unique<Buffer>(device,
+                                                     sizeof(GlobalUbo),
+                                                     1,
+                                                     VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+                                                     VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
+            uboBuffers[i]->Map();
+        }
 
-        // Setup the camera
-        SimpleRenderSystem simpleRenderSystem{device, renderer.GetSwapChainRenderPass()};
+        auto globalSetLayout =
+            DescriptorSetLayout::Builder(device)
+                .AddBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT)
+                .Build();
+
+        std::vector<VkDescriptorSet> globalDescriptorSets(SwapChain::MAX_FRAMES_IN_FLIGHT);
+        for (size_t i = 0; i < globalDescriptorSets.size(); ++i) {
+            auto bufferInfo = uboBuffers[i]->DescriptorInfo();
+            DescriptorWriter(*globalSetLayout, *globalPool)
+                .WriteBuffer(0, &bufferInfo)
+                .Build(globalDescriptorSets[i]);
+        }
+
+        SimpleRenderSystem simpleRenderSystem{device,
+                                              renderer.GetSwapChainRenderPass(),
+                                              globalSetLayout->VulkanDescriptorSetLayout};
         Camera camera{};
 
         auto viewerObject = GameObject::CreateGameObject();
@@ -61,13 +80,17 @@ namespace XIV {
 
             if (auto commandBuffer = renderer.BeginFrame()) {
                 int frameIndex = renderer.GetFrameIndex();
-                FrameInfo frameInfo{frameIndex, frameTime, commandBuffer, camera};
+                FrameInfo frameInfo{frameIndex,
+                                    frameTime,
+                                    commandBuffer,
+                                    camera,
+                                    globalDescriptorSets[frameIndex]};
 
                 // update
                 GlobalUbo ubo{};
                 ubo.ProjectionView = camera.ProjectionMatrix * camera.ViewMatrix;
-                globalUboBuffer.WriteToIndex(&ubo, frameIndex);
-                globalUboBuffer.FlushIndex(frameIndex);
+                uboBuffers[frameIndex]->WriteToBuffer(&ubo);
+                uboBuffers[frameIndex]->Flush();
 
                 // render
                 renderer.BeginSwapChainRenderPass(commandBuffer);

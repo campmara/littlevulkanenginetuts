@@ -13,7 +13,9 @@
 namespace XIV {
     class SimpleRenderSystem {
     public:
-        SimpleRenderSystem(Device &device, VkRenderPass renderPass);
+        SimpleRenderSystem(Device &device,
+                           VkRenderPass renderPass,
+                           VkDescriptorSetLayout globalSetLayout);
         ~SimpleRenderSystem();
         SimpleRenderSystem(const SimpleRenderSystem &) = delete;
         SimpleRenderSystem &operator=(const SimpleRenderSystem &) = delete;
@@ -21,7 +23,7 @@ namespace XIV {
         void RenderGameObjects(FrameInfo &frameInfo, std::vector<GameObject> &gameObjects);
 
     private:
-        void CreatePipelineLayout();
+        void CreatePipelineLayout(VkDescriptorSetLayout globalSetLayout);
         void CreatePipeline(VkRenderPass renderPass);
 
         Device &device;

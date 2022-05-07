@@ -11,6 +11,7 @@ namespace XIV {
         float FrameTime;
         VkCommandBuffer CommandBuffer;
         Camera &Camera;
+        VkDescriptorSet GlobalDescriptorSet;
     };
 } // namespace XIV
 

@@ -14,12 +14,12 @@
 namespace XIV {
     Buffer::Buffer(Device &device,
                    VkDeviceSize instanceSize,
-                   uint32_t instanceCount,
+                   u32 instanceCount,
                    VkBufferUsageFlags usageFlags,
                    VkMemoryPropertyFlags memoryPropertyFlags,
                    VkDeviceSize minOffsetAlignment)
-        : device{device}, InstanceSize{instanceSize}, InstanceCount{instanceCount},
-          UsageFlags{usageFlags}, MemoryPropertyFlags{memoryPropertyFlags} {
+        : InstanceCount{instanceCount}, InstanceSize{instanceSize}, UsageFlags{usageFlags},
+          MemoryPropertyFlags{memoryPropertyFlags}, device{device} {
         AlignmentSize = GetAlignment(instanceSize, minOffsetAlignment);
         BufferSize = AlignmentSize * instanceCount;
         device.CreateBuffer(BufferSize, usageFlags, memoryPropertyFlags, VulkanBuffer, memory);
@@ -43,9 +43,6 @@ namespace XIV {
      */
     VkResult Buffer::Map(VkDeviceSize size, VkDeviceSize offset) {
         assert(VulkanBuffer && memory && "Called map on buffer before create");
-        if (size == VK_WHOLE_SIZE) {
-            return vkMapMemory(device.VulkanDevice, memory, 0, BufferSize, 0, &Mapped);
-        }
         return vkMapMemory(device.VulkanDevice, memory, offset, size, 0, &Mapped);
     }
 

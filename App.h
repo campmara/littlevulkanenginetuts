@@ -1,6 +1,7 @@
 #ifndef APP_H
 #define APP_H
 
+#include "Descriptors.h"
 #include "Device.h"
 #include "GameObject.h"
 #include "Model.h"
@@ -29,6 +30,9 @@ namespace XIV {
         Window window{WIDTH, HEIGHT, "AYO VULKAN!!!"};
         Device device{window};
         Renderer renderer{window, device};
+
+        // note: order of declarations matters
+        std::unique_ptr<DescriptorPool> globalPool{};
         std::vector<GameObject> gameObjects;
     };
 } // namespace XIV
