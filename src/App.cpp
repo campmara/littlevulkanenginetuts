@@ -3,6 +3,7 @@
 #include "Buffer.h"
 #include "Camera.h"
 #include "SimpleRenderSystem.h"
+#include "PointLightSystem.h"
 #include "Math.h"
 
 #include <array>
@@ -12,7 +13,8 @@
 
 namespace XIV {
     struct GlobalUbo {
-        Mat4 ProjectionView{1.f};
+        Mat4 Projection{1.f};
+        Mat4 View{1.f};
         Vec4 AmbientLightColor{1.0f, 1.0f, 1.0f, 0.02f}; // w is intensity
         Vec3 LightPosition{-1.0f};
         alignas(16) Vec4 LightColor{1.0f}; // w is light intensity
@@ -57,6 +59,9 @@ namespace XIV {
         SimpleRenderSystem simpleRenderSystem{device,
                                               renderer.GetSwapChainRenderPass(),
                                               globalSetLayout->VulkanDescriptorSetLayout};
+        PointLightSystem pointLightSystem{device,
+                                          renderer.GetSwapChainRenderPass(),
+                                          globalSetLayout->VulkanDescriptorSetLayout};
         Camera camera{};
 
         auto viewerObject = GameObject::CreateGameObject();
@@ -92,13 +97,15 @@ namespace XIV {
 
                 // update
                 GlobalUbo ubo{};
-                ubo.ProjectionView = camera.ProjectionMatrix * camera.ViewMatrix;
+                ubo.Projection = camera.ProjectionMatrix;
+                ubo.View = camera.ViewMatrix;
                 uboBuffers[frameIndex]->WriteToBuffer(&ubo);
                 uboBuffers[frameIndex]->Flush();
 
                 // render
                 renderer.BeginSwapChainRenderPass(commandBuffer);
                 simpleRenderSystem.RenderGameObjects(frameInfo);
+                pointLightSystem.Render(frameInfo);
                 renderer.EndSwapChainRenderPass(commandBuffer);
                 renderer.EndFrame();
             }
