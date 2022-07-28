@@ -17,6 +17,7 @@ namespace XIV::Render {
     struct GlobalUbo {
         Mat4 Projection{1.0f};
         Mat4 View{1.0f};
+        Mat4 InverseView{1.0f};
         Vec4 AmbientLightColor{1.0f, 1.0f, 1.0f, 0.02f}; // w is intensity
         PointLight PointLights[MAX_LIGHTS];
         int NumLights;

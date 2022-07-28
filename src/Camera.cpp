@@ -44,6 +44,20 @@ namespace XIV {
         ViewMatrix[3][0] = -Wrath::Dot(u, position);
         ViewMatrix[3][1] = -Wrath::Dot(v, position);
         ViewMatrix[3][2] = -Wrath::Dot(w, position);
+
+        InverseViewMatrix = Mat4{1.0f};
+        InverseViewMatrix[0][0] = u.x;
+        InverseViewMatrix[0][1] = u.y;
+        InverseViewMatrix[0][2] = u.z;
+        InverseViewMatrix[1][0] = v.x;
+        InverseViewMatrix[1][1] = v.y;
+        InverseViewMatrix[1][2] = v.z;
+        InverseViewMatrix[2][0] = w.x;
+        InverseViewMatrix[2][1] = w.y;
+        InverseViewMatrix[2][2] = w.z;
+        InverseViewMatrix[3][0] = position.x;
+        InverseViewMatrix[3][1] = position.y;
+        InverseViewMatrix[3][2] = position.z;
     }
 
     void Camera::SetViewTarget(Vec3 position, Vec3 target, Vec3 up) {
@@ -73,5 +87,19 @@ namespace XIV {
         ViewMatrix[3][0] = -Wrath::Dot(u, position);
         ViewMatrix[3][1] = -Wrath::Dot(v, position);
         ViewMatrix[3][2] = -Wrath::Dot(w, position);
+
+        InverseViewMatrix = Mat4{1.0f};
+        InverseViewMatrix[0][0] = u.x;
+        InverseViewMatrix[0][1] = u.y;
+        InverseViewMatrix[0][2] = u.z;
+        InverseViewMatrix[1][0] = v.x;
+        InverseViewMatrix[1][1] = v.y;
+        InverseViewMatrix[1][2] = v.z;
+        InverseViewMatrix[2][0] = w.x;
+        InverseViewMatrix[2][1] = w.y;
+        InverseViewMatrix[2][2] = w.z;
+        InverseViewMatrix[3][0] = position.x;
+        InverseViewMatrix[3][1] = position.y;
+        InverseViewMatrix[3][2] = position.z;
     }
 } // namespace XIV
