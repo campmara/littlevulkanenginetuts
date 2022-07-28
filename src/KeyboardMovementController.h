@@ -1,8 +1,8 @@
 #ifndef KEYBOARD_MOVEMENT_CONTROLLER_H
 #define KEYBOARD_MOVEMENT_CONTROLLER_H
 
-#include "GameObject.h"
-#include "Render/Window.h"
+#include "gameobject.h"
+#include "render/window.h"
 
 namespace XIV {
     class KeyboardMovementController {

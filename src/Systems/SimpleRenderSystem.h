@@ -1,11 +1,11 @@
 #ifndef SIMPLE_RENDER_SYSTEM_H
 #define SIMPLE_RENDER_SYSTEM_H
 
-#include "Render/Device.h"
-#include "Render/FrameInfo.h"
-#include "Render/Pipeline.h"
-#include "GameObject.h"
-#include "Camera.h"
+#include "render/device.h"
+#include "render/frameinfo.h"
+#include "render/pipeline.h"
+#include "gameobject.h"
+#include "camera.h"
 
 #include <memory>
 #include <vector>

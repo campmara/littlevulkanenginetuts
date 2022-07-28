@@ -1,5 +1,5 @@
-#include "Systems/SimpleRenderSystem.h"
-#include "Wrath.h"
+#include "systems/simplerendersystem.h"
+#include "wrath.h"
 
 #include <array>
 #include <cassert>

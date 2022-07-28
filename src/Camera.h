@@ -1,7 +1,7 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include "Wrath.h"
+#include "wrath.h"
 
 namespace XIV {
     class Camera {

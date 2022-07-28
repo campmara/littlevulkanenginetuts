@@ -1,8 +1,8 @@
 #ifndef SWAP_CHAIN_H
 #define SWAP_CHAIN_H
 
-#include "Core.h"
-#include "Device.h"
+#include "core.h"
+#include "device.h"
 
 #include <vulkan/vulkan.h>
 

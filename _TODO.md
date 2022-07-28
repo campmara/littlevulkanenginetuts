@@ -1,5 +1,7 @@
 # TODO
 
+[ ] Finish Brendan Galea Tutorials
+
 ## GLFW Replacement
 [ ] Replace GLFW with SDL (it can work with vulkan)
 [ ] Fix any issues that arise from this

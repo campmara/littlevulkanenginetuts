@@ -1,9 +1,9 @@
 #ifndef MODEL_H
 #define MODEL_H
 
-#include "Buffer.h"
-#include "Device.h"
-#include "Wrath.h"
+#include "buffer.h"
+#include "device.h"
+#include "wrath.h"
 
 #include <memory>
 #include <vector>

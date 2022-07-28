@@ -1,8 +1,8 @@
 #ifndef PIPELINE_H
 #define PIPELINE_H
 
-#include "Core.h"
-#include "Device.h"
+#include "core.h"
+#include "device.h"
 
 #include <string>
 #include <vector>
