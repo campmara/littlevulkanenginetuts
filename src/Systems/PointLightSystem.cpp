@@ -4,6 +4,7 @@
 
 #include <array>
 #include <cassert>
+#include <map>
 #include <stdexcept>
 
 namespace XIV::Systems {
@@ -52,6 +53,7 @@ namespace XIV::Systems {
 
         PipelineConfigInfo pipelineConfig{};
         Pipeline::DefaultConfigInfo(pipelineConfig);
+        Pipeline::EnableAlphaBlending(pipelineConfig);
         pipelineConfig.AttributeDescriptions.clear();
         pipelineConfig.BindingDescriptions.clear();
         pipelineConfig.RenderPass = renderPass;
@@ -87,6 +89,19 @@ namespace XIV::Systems {
     }
 
     void PointLightSystem::Render(FrameInfo &frameInfo) {
+        // sort lights
+        std::map<float, GameObject::id_t> sorted;
+        for (auto &kv : frameInfo.GameObjects) {
+            auto &obj = kv.second;
+            if (obj.PointLight == nullptr)
+                continue;
+
+            // calculate distance
+            auto offset = frameInfo.Camera.GetPosition() - obj.Transform.Translation;
+            float disSquared = Wrath::Dot(offset, offset);
+            sorted[disSquared] = obj.Id;
+        }
+
         pipeline->Bind(frameInfo.CommandBuffer);
 
         vkCmdBindDescriptorSets(frameInfo.CommandBuffer,
@@ -98,11 +113,10 @@ namespace XIV::Systems {
                                 0,
                                 nullptr);
 
-        for (auto &kv : frameInfo.GameObjects) {
-            auto &obj = kv.second;
-            if (obj.PointLight == nullptr) {
-                continue;
-            }
+        // iterate through sorted lights in reverse order
+        for (auto it = sorted.rbegin(); it != sorted.rend(); ++it) {
+            // use game obj id to find light object
+            auto &obj = frameInfo.GameObjects.at(it->second);
 
             PointLightPushConstants push{};
             push.Position = Vec4(obj.Transform.Translation, 1.0f);

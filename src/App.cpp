@@ -65,7 +65,7 @@ namespace XIV {
         // dt stuff
         auto currentTime = std::chrono::high_resolution_clock::now();
 
-        while (!window.ShouldClose()) {
+        while (!window.ShouldClose()) { // MAIN GAME LOOP
             glfwPollEvents();
 
             auto newTime = std::chrono::high_resolution_clock::now();
@@ -89,7 +89,7 @@ namespace XIV {
                                     globalDescriptorSets[frameIndex],
                                     gameObjects};
 
-                // update
+                // UPDATE ---------------------------------------
                 GlobalUbo ubo{};
                 ubo.Projection = camera.ProjectionMatrix;
                 ubo.View = camera.ViewMatrix;
@@ -99,13 +99,18 @@ namespace XIV {
 
                 uboBuffers[frameIndex]->WriteToBuffer(&ubo);
                 uboBuffers[frameIndex]->Flush();
+                // ----------------------------------------------
 
-                // render
+                // RENDER ---------------------------------------
                 renderer.BeginSwapChainRenderPass(commandBuffer);
+
+                // order here matters
                 simpleRenderSystem.RenderGameObjects(frameInfo);
                 pointLightSystem.Render(frameInfo);
+
                 renderer.EndSwapChainRenderPass(commandBuffer);
                 renderer.EndFrame();
+                // ----------------------------------------------
             }
         }
 
