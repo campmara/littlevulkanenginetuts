@@ -40,6 +40,7 @@ namespace XIV::Render {
         Pipeline &operator=(const Pipeline &) = delete;
 
         static void DefaultConfigInfo(PipelineConfigInfo &configInfo);
+        static void EnableAlphaBlending(PipelineConfigInfo &configInfo);
 
         void Bind(VkCommandBuffer commandBuffer);
 
