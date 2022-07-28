@@ -2,7 +2,7 @@
 
 #include <stdexcept>
 
-namespace XIV {
+namespace XIV::Render {
     Window::Window(int w, int h, const char *name) : Width(w), Height(h), name(name) {
         InitWindow();
     }

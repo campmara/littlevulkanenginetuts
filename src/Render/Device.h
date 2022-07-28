@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 
-namespace XIV {
+namespace XIV::Render {
     struct SwapChainSupportDetails {
         VkSurfaceCapabilitiesKHR Capabilities;
         std::vector<VkSurfaceFormatKHR> Formats;
@@ -105,6 +105,6 @@ namespace XIV {
 
         Window &window;
     };
-} // namespace XIV
+} // namespace XIV::Render
 
 #endif

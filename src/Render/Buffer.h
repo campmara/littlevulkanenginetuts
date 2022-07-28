@@ -3,7 +3,7 @@
 
 #include "Device.h"
 
-namespace XIV {
+namespace XIV::Render {
     class Buffer {
     public:
         Buffer(Device &device,
@@ -47,6 +47,6 @@ namespace XIV {
         VkDeviceMemory memory = VK_NULL_HANDLE;
     };
 
-} // namespace XIV
+} // namespace XIV::Render
 
 #endif

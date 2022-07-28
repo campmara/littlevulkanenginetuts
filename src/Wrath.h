@@ -1,7 +1,7 @@
-#ifndef MATH_H
-#define MATH_H
+#ifndef WRATH_H
+#define WRATH_H
 
-// GLM WRAPPER
+// GLM MATH WRAPPER = WRATH
 // Static handlers for glm functions, in order to abstract away all of the glm::x everywhere.
 
 #define GLM_FORCE_RADIANS
@@ -22,7 +22,7 @@ typedef glm::mat3 Mat3;
 typedef glm::mat4 Mat4;
 
 namespace XIV {
-    class Math {
+    class Wrath {
     public:
         // FLOAT
         static float Pi() {

@@ -9,7 +9,7 @@
 #include <memory>
 #include <vector>
 
-namespace XIV {
+namespace XIV::Render {
     class Renderer {
     public:
         Renderer(Window &window, Device &device);
@@ -55,6 +55,6 @@ namespace XIV {
         u32 currentImageIndex;
         int currentFrameIndex{0};
     };
-} // namespace XIV
+} // namespace XIV::Render
 
 #endif

@@ -1,12 +1,12 @@
 #ifndef APP_H
 #define APP_H
 
-#include "Descriptors.h"
-#include "Device.h"
+#include "Render/Descriptors.h"
+#include "Render/Device.h"
+#include "Render/Model.h"
+#include "Render/Renderer.h"
+#include "Render/Window.h"
 #include "GameObject.h"
-#include "Model.h"
-#include "Renderer.h"
-#include "Window.h"
 
 #include <memory>
 #include <vector>

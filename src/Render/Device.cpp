@@ -5,7 +5,7 @@
 #include <set>
 #include <unordered_set>
 
-namespace XIV {
+namespace XIV::Render {
 #pragma region Local Functions
     static VKAPI_ATTR VkBool32 VKAPI_CALL
     DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,

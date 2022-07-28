@@ -3,14 +3,17 @@
 
 #include "Buffer.h"
 #include "Device.h"
-#include "Math.h"
+#include "Wrath.h"
 
 #include <memory>
 #include <vector>
 
-namespace XIV {
+namespace XIV::Render {
     class Model {
     public:
+        static inline const char *ENGINE_DIR = "../../";
+        static inline const char *RESOURCE_DIR = "../../res/";
+
         struct Vertex {
             Vec3 Position{};
             Vec3 Color{};
@@ -52,6 +55,6 @@ namespace XIV {
         std::unique_ptr<Buffer> indexBuffer;
         u32 indexCount;
     };
-} // namespace XIV
+} // namespace XIV::Render
 
 #endif

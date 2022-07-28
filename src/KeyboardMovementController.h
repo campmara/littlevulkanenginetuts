@@ -2,7 +2,7 @@
 #define KEYBOARD_MOVEMENT_CONTROLLER_H
 
 #include "GameObject.h"
-#include "Window.h"
+#include "Render/Window.h"
 
 namespace XIV {
     class KeyboardMovementController {

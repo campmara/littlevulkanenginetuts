@@ -1,11 +1,11 @@
-#include "SimpleRenderSystem.h"
-#include "Math.h"
+#include "Systems/SimpleRenderSystem.h"
+#include "Wrath.h"
 
 #include <array>
 #include <cassert>
 #include <stdexcept>
 
-namespace XIV {
+namespace XIV::Systems {
     struct SimplePushConstantData {
         Mat4 ModelMatrix{1.0f};
         Mat4 NormalMatrix{1.0f};
@@ -53,8 +53,8 @@ namespace XIV {
         pipelineConfig.RenderPass = renderPass;
         pipelineConfig.PipelineLayout = pipelineLayout;
         pipeline = std::make_unique<Pipeline>(device,
-                                              "shaders/simple.vert.spv",
-                                              "shaders/simple.frag.spv",
+                                              "res/shaders/simple.vert.spv",
+                                              "res/shaders/simple.frag.spv",
                                               pipelineConfig);
     }
 
@@ -90,4 +90,4 @@ namespace XIV {
             obj.Model->Draw(frameInfo.CommandBuffer);
         }
     }
-} // namespace XIV
+} // namespace XIV::Systems

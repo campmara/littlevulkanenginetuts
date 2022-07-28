@@ -3,7 +3,7 @@
 #include <cassert>
 #include <stdexcept>
 
-namespace XIV {
+namespace XIV::Render {
     // *************** Descriptor Set Layout Builder *********************
 
     DescriptorSetLayout::Builder &DescriptorSetLayout::Builder::AddBinding(
