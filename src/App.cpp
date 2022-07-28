@@ -93,6 +93,7 @@ namespace XIV {
                 GlobalUbo ubo{};
                 ubo.Projection = camera.ProjectionMatrix;
                 ubo.View = camera.ViewMatrix;
+                ubo.InverseView = camera.InverseViewMatrix;
 
                 pointLightSystem.Update(frameInfo, ubo);
 

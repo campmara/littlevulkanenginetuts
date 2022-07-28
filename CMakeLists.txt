@@ -15,7 +15,7 @@ if (CMAKE_GENERATOR STREQUAL "MinGW Makefiles")
     set(CMAKE_CXX_COMPILER ${MINGW_PATH}/bin/g++.exe)
 endif()
 
-project(${NAME} VERSION 0.0.2)
+project(${NAME} VERSION 0.0.3)
 
 # 1. Set VULKAN_SDK_PATH in .env.cmake to target specific vulkan version
 if (DEFINED VULKAN_SDK_PATH)

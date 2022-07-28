@@ -16,6 +16,7 @@ namespace XIV {
 
         Mat4 ProjectionMatrix{1.0f};
         Mat4 ViewMatrix{1.0f};
+        Mat4 InverseViewMatrix{1.0f};
     };
 } // namespace XIV
 
