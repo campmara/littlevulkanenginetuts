@@ -1,10 +1,10 @@
-#include "App.h"
-#include "KeyboardMovementController.h"
-#include "Render/Buffer.h"
-#include "Camera.h"
-#include "Systems/SimpleRenderSystem.h"
-#include "Systems/PointLightSystem.h"
-#include "Wrath.h"
+#include "app.h"
+#include "wrath.h"
+#include "keyboardmovementcontroller.h"
+#include "render/buffer.h"
+#include "camera.h"
+#include "systems/pointlightsystem.h"
+#include "systems/simplerendersystem.h"
 
 #include <array>
 #include <cassert>
@@ -14,14 +14,6 @@
 using namespace XIV::Systems;
 
 namespace XIV {
-    struct GlobalUbo {
-        Mat4 Projection{1.f};
-        Mat4 View{1.f};
-        Vec4 AmbientLightColor{1.0f, 1.0f, 1.0f, 0.02f}; // w is intensity
-        Vec3 LightPosition{-1.0f};
-        alignas(16) Vec4 LightColor{1.0f}; // w is light intensity
-    };
-
     App::App() {
         globalPool =
             DescriptorPool::Builder(device)
@@ -101,6 +93,9 @@ namespace XIV {
                 GlobalUbo ubo{};
                 ubo.Projection = camera.ProjectionMatrix;
                 ubo.View = camera.ViewMatrix;
+
+                pointLightSystem.Update(frameInfo, ubo);
+
                 uboBuffers[frameIndex]->WriteToBuffer(&ubo);
                 uboBuffers[frameIndex]->Flush();
 
@@ -137,5 +132,24 @@ namespace XIV {
         floor.Transform.Translation = {0.f, .5f, 0.f};
         floor.Transform.Scale = {3.f, 1.f, 3.f};
         gameObjects.emplace(floor.Id, std::move(floor));
+
+        std::vector<Vec3> lightColors{
+            {1.f, .1f, .1f},
+            {.1f, .1f, 1.f},
+            {.1f, 1.f, .1f},
+            {1.f, 1.f, .1f},
+            {.1f, 1.f, 1.f},
+            {1.f, 1.f, 1.f} //
+        };
+
+        for (int i = 0; i < lightColors.size(); i++) {
+            auto pointLight = GameObject::CreatePointLight(0.2f);
+            pointLight.Color = lightColors[i];
+            auto rotateLight = Wrath::Rotate(Mat4(1.0f),
+                                             (i * Wrath::TwoPi()) / lightColors.size(),
+                                             {0.0f, -1.0f, 0.0f});
+            pointLight.Transform.Translation = Vec3(rotateLight * Vec4(-1.0f, -1.0f, -1.0f, 1.0f));
+            gameObjects.emplace(pointLight.Id, std::move(pointLight));
+        }
     }
 } // namespace XIV

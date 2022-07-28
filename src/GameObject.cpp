@@ -1,13 +1,13 @@
-#include "GameObject.h"
+#include "gameobject.h"
 
 namespace XIV {
     Mat4 TransformComponent::Matrix4() {
-        const float c3 = glm::cos(Rotation.z);
-        const float s3 = glm::sin(Rotation.z);
-        const float c2 = glm::cos(Rotation.x);
-        const float s2 = glm::sin(Rotation.x);
-        const float c1 = glm::cos(Rotation.y);
-        const float s1 = glm::sin(Rotation.y);
+        const float c3 = Wrath::Cos(Rotation.z);
+        const float s3 = Wrath::Sin(Rotation.z);
+        const float c2 = Wrath::Cos(Rotation.x);
+        const float s2 = Wrath::Sin(Rotation.x);
+        const float c1 = Wrath::Cos(Rotation.y);
+        const float s1 = Wrath::Sin(Rotation.y);
         return Mat4{{
                         Scale.x * (c1 * c3 + s1 * s2 * s3),
                         Scale.x * (c2 * s3),
@@ -29,13 +29,13 @@ namespace XIV {
                     {Translation.x, Translation.y, Translation.z, 1.0f}};
     }
 
-    glm::mat3 TransformComponent::NormalMatrix() {
-        const float c3 = glm::cos(Rotation.z);
-        const float s3 = glm::sin(Rotation.z);
-        const float c2 = glm::cos(Rotation.x);
-        const float s2 = glm::sin(Rotation.x);
-        const float c1 = glm::cos(Rotation.y);
-        const float s1 = glm::sin(Rotation.y);
+    Mat3 TransformComponent::NormalMatrix() {
+        const float c3 = Wrath::Cos(Rotation.z);
+        const float s3 = Wrath::Sin(Rotation.z);
+        const float c2 = Wrath::Cos(Rotation.x);
+        const float s2 = Wrath::Sin(Rotation.x);
+        const float c1 = Wrath::Cos(Rotation.y);
+        const float s1 = Wrath::Sin(Rotation.y);
         const Vec3 invScale = 1.0f / Scale;
 
         return Mat3{
@@ -55,5 +55,15 @@ namespace XIV {
                 invScale.z * (c1 * c2),
             },
         };
+    }
+
+    // Creates a GameObject with an attached PointLightComponent
+    GameObject GameObject::CreatePointLight(float intensity, float radius, Vec3 color) {
+        GameObject gameObj = GameObject::CreateGameObject();
+        gameObj.Color = color;
+        gameObj.Transform.Scale.x = radius;
+        gameObj.PointLight = std::make_unique<PointLightComponent>();
+        gameObj.PointLight->LightIntensity = intensity;
+        return gameObj;
     }
 } // namespace XIV

@@ -1,6 +1,6 @@
-#include "KeyboardMovementController.h"
+#include "keyboardmovementcontroller.h"
 
-#include "Wrath.h"
+#include "wrath.h"
 
 namespace XIV {
     void KeyboardMovementController::MoveInPlaneXZ(GLFWwindow *window,

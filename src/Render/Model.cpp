@@ -1,5 +1,5 @@
-#include "Model.h"
-#include "Utils.h"
+#include "model.h"
+#include "utils.h"
 
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tiny_obj_loader.h>

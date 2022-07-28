@@ -1,7 +1,7 @@
 #ifndef DESCRIPTORS_H
 #define DESCRIPTORS_H
 
-#include "Device.h"
+#include "device.h"
 
 #include <memory>
 #include <unordered_map>

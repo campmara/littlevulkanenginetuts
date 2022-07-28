@@ -1,9 +1,9 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
-#include "Device.h"
-#include "SwapChain.h"
-#include "Window.h"
+#include "device.h"
+#include "swapchain.h"
+#include "window.h"
 
 #include <cassert>
 #include <memory>

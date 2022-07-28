@@ -1,11 +1,11 @@
 #ifndef POINT_LIGHT_SYSTEM
 #define POINT_LIGHT_SYSTEM
 
-#include "Render/FrameInfo.h"
-#include "Render/Pipeline.h"
-#include "Render/Device.h"
-#include "Camera.h"
-#include "GameObject.h"
+#include "render/frameinfo.h"
+#include "render/pipeline.h"
+#include "render/device.h"
+#include "camera.h"
+#include "gameobject.h"
 
 #include <memory>
 #include <vector>
@@ -22,6 +22,7 @@ namespace XIV::Systems {
         PointLightSystem(const PointLightSystem &) = delete;
         PointLightSystem &operator=(const PointLightSystem &) = delete;
 
+        void Update(FrameInfo &frameInfo, GlobalUbo &ubo);
         void Render(FrameInfo &frameInfo);
 
     private:

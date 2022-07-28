@@ -83,6 +83,11 @@ namespace XIV {
         static Vec3 Cross(Vec3 x, Vec3 y) {
             return glm::cross(x, y);
         }
+
+        // MANIPULATION
+        static Mat4 Rotate(Mat4 mat, float angle, Vec3 axis) {
+            return glm::rotate(mat, angle, axis);
+        }
     };
 } // namespace XIV
 

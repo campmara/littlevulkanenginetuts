@@ -1,8 +1,8 @@
 #ifndef DEVICE_H
 #define DEVICE_H
 
-#include "Core.h"
-#include "Window.h"
+#include "core.h"
+#include "window.h"
 
 #include <string>
 #include <vector>

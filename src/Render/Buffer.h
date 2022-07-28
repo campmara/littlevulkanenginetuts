@@ -1,7 +1,7 @@
 #ifndef BUFFER_H
 #define BUFFER_H
 
-#include "Device.h"
+#include "device.h"
 
 namespace XIV::Render {
     class Buffer {
