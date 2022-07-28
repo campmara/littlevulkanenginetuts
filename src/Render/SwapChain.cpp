@@ -8,7 +8,7 @@
 #include <set>
 #include <stdexcept>
 
-namespace XIV {
+namespace XIV::Render {
     SwapChain::SwapChain(Device &device, VkExtent2D windowExtent)
         : device{device}, windowExtent{windowExtent} {
         Init();

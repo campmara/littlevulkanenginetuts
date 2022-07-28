@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 
-namespace XIV {
+namespace XIV::Render {
     class SwapChain {
     public:
         static constexpr int MAX_FRAMES_IN_FLIGHT = 2;
@@ -89,6 +89,6 @@ namespace XIV {
 
         size_t currentFrame = 0;
     };
-} // namespace XIV
+} // namespace XIV::Render
 
 #endif

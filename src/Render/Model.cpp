@@ -11,8 +11,8 @@
 #include <unordered_map>
 
 namespace std {
-    template <> struct hash<XIV::Model::Vertex> {
-        size_t operator()(XIV::Model::Vertex const &vertex) const {
+    template <> struct hash<XIV::Render::Model::Vertex> {
+        size_t operator()(XIV::Render::Model::Vertex const &vertex) const {
             size_t seed = 0;
             XIV::HashCombine(seed, vertex.Position, vertex.Color, vertex.Normal, vertex.Uv);
             return seed;
@@ -20,7 +20,7 @@ namespace std {
     };
 } // namespace std
 
-namespace XIV {
+namespace XIV::Render {
 #pragma region Vertex Struct Member Functions
     std::vector<VkVertexInputBindingDescription> Model::Vertex::GetBindingDescriptions() {
         std::vector<VkVertexInputBindingDescription> bindingDescriptions(1);
@@ -57,7 +57,9 @@ namespace XIV {
         std::vector<tinyobj::material_t> materials;
         std::string warn, err;
 
-        if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, path.c_str())) {
+        std::string finalPath = RESOURCE_DIR + path;
+
+        if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, finalPath.c_str())) {
             throw std::runtime_error(warn + err);
         }
 

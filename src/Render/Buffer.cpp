@@ -11,7 +11,7 @@
 #include <cassert>
 #include <cstring>
 
-namespace XIV {
+namespace XIV::Render {
     Buffer::Buffer(Device &device,
                    VkDeviceSize instanceSize,
                    u32 instanceCount,

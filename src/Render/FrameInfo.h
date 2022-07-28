@@ -6,7 +6,7 @@
 
 #include <vulkan/vulkan.h>
 
-namespace XIV {
+namespace XIV::Render {
     struct FrameInfo {
         int FrameIndex;
         float FrameTime;
@@ -15,6 +15,6 @@ namespace XIV {
         VkDescriptorSet GlobalDescriptorSet;
         GameObject::Map &GameObjects;
     };
-} // namespace XIV
+} // namespace XIV::Render
 
 #endif

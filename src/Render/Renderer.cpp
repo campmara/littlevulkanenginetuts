@@ -5,8 +5,7 @@
 #include <cassert>
 #include <stdexcept>
 
-namespace XIV {
-
+namespace XIV::Render {
     Renderer::Renderer(Window &window, Device &device) : window{window}, device{device} {
         RecreateSwapChain();
         CreateCommandBuffers();

@@ -7,7 +7,7 @@
 #include <unordered_map>
 #include <vector>
 
-namespace XIV {
+namespace XIV::Render {
     class DescriptorSetLayout {
     public:
         class Builder {
@@ -96,6 +96,6 @@ namespace XIV {
         std::vector<VkWriteDescriptorSet> writes;
     };
 
-} // namespace XIV
+} // namespace XIV::Render
 
 #endif

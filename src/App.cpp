@@ -1,15 +1,17 @@
 #include "App.h"
 #include "KeyboardMovementController.h"
-#include "Buffer.h"
+#include "Render/Buffer.h"
 #include "Camera.h"
-#include "SimpleRenderSystem.h"
-#include "PointLightSystem.h"
-#include "Math.h"
+#include "Systems/SimpleRenderSystem.h"
+#include "Systems/PointLightSystem.h"
+#include "Wrath.h"
 
 #include <array>
 #include <cassert>
 #include <chrono>
 #include <stdexcept>
+
+using namespace XIV::Systems;
 
 namespace XIV {
     struct GlobalUbo {
@@ -84,7 +86,7 @@ namespace XIV {
             camera.SetViewXYZ(viewerObject.Transform.Translation, viewerObject.Transform.Rotation);
 
             float aspect = renderer.GetAspectRatio();
-            camera.SetPerspectiveProjection(Math::Deg2Rad(50.0f), aspect, 0.1f, 100.0f);
+            camera.SetPerspectiveProjection(Wrath::Deg2Rad(50.0f), aspect, 0.1f, 100.0f);
 
             if (auto commandBuffer = renderer.BeginFrame()) {
                 int frameIndex = renderer.GetFrameIndex();

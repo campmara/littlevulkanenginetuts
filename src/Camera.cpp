@@ -16,7 +16,7 @@ namespace XIV {
     }
 
     void Camera::SetPerspectiveProjection(float fovY, float aspect, float near, float far) {
-        assert(Math::Abs(aspect - Math::Epsilon()) > 0.0f);
+        assert(Wrath::Abs(aspect - Wrath::Epsilon()) > 0.0f);
         const float tanHalfFovy = tan(fovY / 2.0f);
         ProjectionMatrix = Mat4{0.0f};
         ProjectionMatrix[0][0] = 1.f / (aspect * tanHalfFovy);
@@ -27,9 +27,9 @@ namespace XIV {
     }
 
     void Camera::SetViewDirection(Vec3 position, Vec3 direction, Vec3 up) {
-        const Vec3 w{Math::Normalize(direction)};
-        const Vec3 u{Math::Normalize(Math::Cross(w, up))};
-        const Vec3 v{Math::Cross(w, u)};
+        const Vec3 w{Wrath::Normalize(direction)};
+        const Vec3 u{Wrath::Normalize(Wrath::Cross(w, up))};
+        const Vec3 v{Wrath::Cross(w, u)};
 
         ViewMatrix = Mat4{1.0f};
         ViewMatrix[0][0] = u.x;
@@ -41,9 +41,9 @@ namespace XIV {
         ViewMatrix[0][2] = w.x;
         ViewMatrix[1][2] = w.y;
         ViewMatrix[2][2] = w.z;
-        ViewMatrix[3][0] = -Math::Dot(u, position);
-        ViewMatrix[3][1] = -Math::Dot(v, position);
-        ViewMatrix[3][2] = -Math::Dot(w, position);
+        ViewMatrix[3][0] = -Wrath::Dot(u, position);
+        ViewMatrix[3][1] = -Wrath::Dot(v, position);
+        ViewMatrix[3][2] = -Wrath::Dot(w, position);
     }
 
     void Camera::SetViewTarget(Vec3 position, Vec3 target, Vec3 up) {
@@ -51,12 +51,12 @@ namespace XIV {
     }
 
     void Camera::SetViewXYZ(Vec3 position, Vec3 rotation) {
-        const float c3 = Math::Cos(rotation.z);
-        const float s3 = Math::Sin(rotation.z);
-        const float c2 = Math::Cos(rotation.x);
-        const float s2 = Math::Sin(rotation.x);
-        const float c1 = Math::Cos(rotation.y);
-        const float s1 = Math::Sin(rotation.y);
+        const float c3 = Wrath::Cos(rotation.z);
+        const float s3 = Wrath::Sin(rotation.z);
+        const float c2 = Wrath::Cos(rotation.x);
+        const float s2 = Wrath::Sin(rotation.x);
+        const float c1 = Wrath::Cos(rotation.y);
+        const float s1 = Wrath::Sin(rotation.y);
         const Vec3 u{(c1 * c3 + s1 * s2 * s3), (c2 * s3), (c1 * s2 * s3 - c3 * s1)};
         const Vec3 v{(c3 * s1 * s2 - c1 * s3), (c2 * c3), (c1 * c3 * s2 + s1 * s3)};
         const Vec3 w{(c2 * s1), (-s2), (c1 * c2)};
@@ -70,8 +70,8 @@ namespace XIV {
         ViewMatrix[0][2] = w.x;
         ViewMatrix[1][2] = w.y;
         ViewMatrix[2][2] = w.z;
-        ViewMatrix[3][0] = -Math::Dot(u, position);
-        ViewMatrix[3][1] = -Math::Dot(v, position);
-        ViewMatrix[3][2] = -Math::Dot(w, position);
+        ViewMatrix[3][0] = -Wrath::Dot(u, position);
+        ViewMatrix[3][1] = -Wrath::Dot(v, position);
+        ViewMatrix[3][2] = -Wrath::Dot(w, position);
     }
 } // namespace XIV

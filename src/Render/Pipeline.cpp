@@ -6,7 +6,11 @@
 #include <iostream>
 #include <stdexcept>
 
-namespace XIV {
+#ifndef ENGINE_DIR
+#define ENGINE_DIR "../../"
+#endif
+
+namespace XIV::Render {
     Pipeline::Pipeline(Device &device,
                        const std::string &vertPath,
                        const std::string &fragPath,
@@ -103,7 +107,7 @@ namespace XIV {
     }
 
     std::vector<char> Pipeline::ReadFile(const std::string &filePath) {
-        std::string enginePath = filePath;
+        std::string enginePath = ENGINE_DIR + filePath;
         std::ifstream file{enginePath, std::ios::ate | std::ios::binary};
 
         if (!file.is_open()) {

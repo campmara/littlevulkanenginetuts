@@ -1,11 +1,13 @@
 #ifndef GAME_OBJECT_H
 #define GAME_OBJECT_H
 
-#include "Model.h"
-#include "Math.h"
+#include "Render/Model.h"
+#include "Wrath.h"
 
 #include <memory>
 #include <unordered_map>
+
+using namespace XIV::Render;
 
 namespace XIV {
     struct TransformComponent {

@@ -6,7 +6,7 @@
 
 #include <string>
 
-namespace XIV {
+namespace XIV::Render {
     class Window {
     public:
         Window(int w, int h, const char *name);
@@ -36,6 +36,6 @@ namespace XIV {
 
         const char *name;
     };
-} // namespace XIV
+} // namespace XIV::Render
 
 #endif

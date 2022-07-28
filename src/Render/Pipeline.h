@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 
-namespace XIV {
+namespace XIV::Render {
     struct PipelineConfigInfo {
         PipelineConfigInfo() = default;
         PipelineConfigInfo(const PipelineConfigInfo &) = delete;
@@ -56,6 +56,6 @@ namespace XIV {
         VkShaderModule vertShaderModule;
         VkShaderModule fragShaderModule;
     };
-} // namespace XIV
+} // namespace XIV::Render
 
 #endif

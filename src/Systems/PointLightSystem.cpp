@@ -1,12 +1,12 @@
-#include "PointLightSystem.h"
+#include "Systems/PointLightSystem.h"
 
-#include "Math.h"
+#include "Wrath.h"
 
 #include <array>
 #include <cassert>
 #include <stdexcept>
 
-namespace XIV {
+namespace XIV::Systems {
     PointLightSystem::PointLightSystem(Device &device,
                                        VkRenderPass renderPass,
                                        VkDescriptorSetLayout globalSetLayout)
@@ -51,8 +51,8 @@ namespace XIV {
         pipelineConfig.RenderPass = renderPass;
         pipelineConfig.PipelineLayout = pipelineLayout;
         pipeline = std::make_unique<Pipeline>(device,
-                                              "shaders/light_point.vert.spv",
-                                              "shaders/light_point.frag.spv",
+                                              "res/shaders/light_point.vert.spv",
+                                              "res/shaders/light_point.frag.spv",
                                               pipelineConfig);
     }
 
@@ -71,4 +71,4 @@ namespace XIV {
         vkCmdDraw(frameInfo.CommandBuffer, 6, 1, 0, 0);
     }
 
-} // namespace XIV
+} // namespace XIV::Systems

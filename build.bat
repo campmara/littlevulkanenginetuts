@@ -2,13 +2,16 @@
 :: Author: Mara Campbell
 :: -------------------------------------
 
-:: el clásico
 @echo off
 
-:: compile all shaders
-pushd shaders
-call compile.bat
-popd
+if not exist bin mkdir bin
+cd bin
+if not exist mingw mkdir mingw
+cd mingw
+:: cmake --fresh -S ../../ -B . -G "MinGW Makefiles"
+cmake -S ../../  -B . -G "MinGW Makefiles"
+mingw32-make.exe && mingw32-make.exe Shaders && XIV.exe
+cd ..
+cd ..
 
-:: make and run the executable
-mingw32-make && bin\xiv.exe
+@pause

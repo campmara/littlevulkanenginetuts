@@ -1,16 +1,18 @@
 #ifndef SIMPLE_RENDER_SYSTEM_H
 #define SIMPLE_RENDER_SYSTEM_H
 
-#include "Camera.h"
-#include "Device.h"
-#include "FrameInfo.h"
+#include "Render/Device.h"
+#include "Render/FrameInfo.h"
+#include "Render/Pipeline.h"
 #include "GameObject.h"
-#include "Pipeline.h"
+#include "Camera.h"
 
 #include <memory>
 #include <vector>
 
-namespace XIV {
+using namespace XIV::Render;
+
+namespace XIV::Systems {
     class SimpleRenderSystem {
     public:
         SimpleRenderSystem(Device &device,
@@ -31,6 +33,6 @@ namespace XIV {
         std::unique_ptr<Pipeline> pipeline;
         VkPipelineLayout pipelineLayout;
     };
-} // namespace XIV
+} // namespace XIV::Systems
 
 #endif
